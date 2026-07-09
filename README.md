@@ -26,7 +26,6 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 **남은 것 / 확인 필요**:
 
 - 인증 상태 **전체 e2e 클릭-스루**(가입→주문→관리자 입금확인→송장→마이페이지 배송확인) 미검증 — 관리자 계정 필요(현재 dev에 admin 1명 승격됨).
-- 관리자 편집폼 `state_referenced_locally` warnings 21건(정상 흐름 무해, 정리 대상).
 - **정책 결정 필요**: 배송지 테이블 부재(주소는 주문 시 입력) / 주문이력 보유 회원 탈퇴(orders FK `RESTRICT` vs 법정 보존 → 익명화 마이그레이션 필요).
 - 이미지 업로드는 orphan storage 객체 정리 미구현(단순화).
 
