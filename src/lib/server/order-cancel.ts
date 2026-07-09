@@ -28,11 +28,21 @@ export async function requestOrderCancel(userId: string, orderId: string): Promi
 
 	// 입금완료(paid) 상태면 환불 대상으로 표시 (실제 환불은 관리자가 처리)
 	const payment_status = order.payment_status === 'paid' ? 'refunded' : 'cancelled';
-	const { error: updErr } = await supabaseAdmin
+	// 확인-업데이트 사이 race 제거: WHERE 에 order_status IN CANCELLABLE 를 함께 걸고
+	// 실제 갱신된 행 수로 판정한다(그 사이 배송준비/배송중으로 바뀌었으면 0행 → 실패).
+	const { data: updated, error: updErr } = await supabaseAdmin
 		.from('orders')
 		.update({ order_status: 'cancelled', payment_status })
-		.eq('id', orderId);
+		.eq('id', orderId)
+		.in('order_status', CANCELLABLE)
+		.select('id');
 
 	if (updErr) return { ok: false, message: '취소 처리 중 오류가 발생했습니다.' };
+	if (!updated || updated.length === 0) {
+		return {
+			ok: false,
+			message: '이미 배송 준비가 시작되어 온라인 취소가 불가합니다. 전화로 문의해 주세요.'
+		};
+	}
 	return { ok: true };
 }

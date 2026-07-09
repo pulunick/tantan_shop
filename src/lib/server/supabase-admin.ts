@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
-import { env as privateEnv } from '$env/dynamic/private';
-import { env as publicEnv } from '$env/dynamic/public';
+import { SUPABASE_SECRET_KEY } from '$env/static/private';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
 
 /**
  * 서버 전용 관리자 클라이언트 (secret 키 사용 → RLS 우회).
@@ -12,13 +12,9 @@ import { env as publicEnv } from '$env/dynamic/public';
  * 용도: 가격 서버 재계산, 주문 생성, 상태 변경 등 RLS 밖의 신뢰된 서버 작업.
  * 일반 사용자 요청은 event.locals.supabase(publishable+RLS) 를 쓴다.
  */
-export const supabaseAdmin = createClient(
-	publicEnv.PUBLIC_SUPABASE_URL,
-	privateEnv.SUPABASE_SECRET_KEY,
-	{
-		auth: {
-			autoRefreshToken: false,
-			persistSession: false
-		}
+export const supabaseAdmin = createClient(PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, {
+	auth: {
+		autoRefreshToken: false,
+		persistSession: false
 	}
-);
+});

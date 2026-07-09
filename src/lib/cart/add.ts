@@ -31,19 +31,22 @@ export async function addToCart(
 		? existing.eq('option_id', item.optionId)
 		: existing.is('option_id', null);
 
-	const { data: row } = await existing.maybeSingle();
+	const { data: row, error: selErr } = await existing.maybeSingle();
+	if (selErr) throw new Error(`장바구니 조회 실패: ${selErr.message}`);
 
 	if (row) {
-		await supabase
+		const { error: updErr } = await supabase
 			.from('cart_items')
 			.update({ quantity: row.quantity + item.quantity })
 			.eq('id', row.id);
+		if (updErr) throw new Error(`장바구니 수량 갱신 실패: ${updErr.message}`);
 	} else {
-		await supabase.from('cart_items').insert({
+		const { error: insErr } = await supabase.from('cart_items').insert({
 			user_id: userId,
 			product_id: item.productId,
 			option_id: item.optionId,
 			quantity: item.quantity
 		});
+		if (insErr) throw new Error(`장바구니 담기 실패: ${insErr.message}`);
 	}
 }

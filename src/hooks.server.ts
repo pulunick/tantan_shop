@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect, error } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
-import { env as publicEnv } from '$env/dynamic/public';
+import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY } from '$env/static/public';
 
 /**
  * Supabase 서버 클라이언트를 요청마다 생성해 event.locals 에 심는다.
@@ -9,20 +9,16 @@ import { env as publicEnv } from '$env/dynamic/public';
  * - 세션은 쿠키에 저장/복원된다.
  */
 const supabase: Handle = async ({ event, resolve }) => {
-	event.locals.supabase = createServerClient(
-		publicEnv.PUBLIC_SUPABASE_URL,
-		publicEnv.PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-		{
-			cookies: {
-				getAll: () => event.cookies.getAll(),
-				setAll: (cookiesToSet) => {
-					cookiesToSet.forEach(({ name, value, options }) => {
-						event.cookies.set(name, value, { ...options, path: '/' });
-					});
-				}
+	event.locals.supabase = createServerClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
+		cookies: {
+			getAll: () => event.cookies.getAll(),
+			setAll: (cookiesToSet) => {
+				cookiesToSet.forEach(({ name, value, options }) => {
+					event.cookies.set(name, value, { ...options, path: '/' });
+				});
 			}
 		}
-	);
+	});
 
 	/**
 	 * 세션을 안전하게 조회한다. getSession() 은 쿠키만 읽으므로 위조 가능 →

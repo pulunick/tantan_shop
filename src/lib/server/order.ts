@@ -11,6 +11,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { CartItem } from '$lib/cart/ops';
 import { recalculateCart, type ProductFetcher, type PricedLine } from './pricing';
+import { supabaseAdmin } from './supabase-admin';
 
 export type ReceiverInfo = {
 	receiver_name: string;
@@ -62,15 +63,19 @@ function makeFetcher(supabase: SupabaseClient): ProductFetcher {
 export type CreateOrderResult = { orderNo: string; total: number };
 
 /**
- * 본인 cart_items 로 주문을 생성한다. RLS(orders_insert_own / order_items_insert_own)로
- * 본인 주문만 삽입되며, 금액/스냅샷은 서버 재계산 결과를 사용한다.
+ * 본인 cart_items 로 주문을 생성한다. 금액/스냅샷은 서버 재계산 결과를 사용한다.
+ *
+ * 보안: orders/order_items 쓰기는 secret 키(supabaseAdmin)로만 수행한다. 사용자가
+ * Data API 로 직접 orders 를 INSERT 해 total_amount/unit_price 를 조작하는 것을 막기 위해
+ * orders_insert_own / order_items_insert_own RLS 정책은 제거했다(마이그레이션).
+ * cart_items 조회/삭제는 본인 소유이므로 전달받은 user client(RLS) 를 그대로 쓴다.
  */
 export async function createOrder(
 	supabase: SupabaseClient,
 	userId: string,
 	receiver: ReceiverInfo
 ): Promise<CreateOrderResult> {
-	// 1) 서버 장바구니 로드 (클라이언트 값 미신뢰)
+	// 1) 서버 장바구니 로드 (클라이언트 값 미신뢰) — 본인 것이므로 user client
 	const { data: cartRows, error: cartErr } = await supabase
 		.from('cart_items')
 		.select('product_id, option_id, quantity')
@@ -91,7 +96,7 @@ export async function createOrder(
 	let orderNo = '';
 	for (let attempt = 0; attempt < 3 && !orderId; attempt++) {
 		orderNo = generateOrderNo(new Date(), Math.random());
-		const { data, error } = await supabase
+		const { data, error } = await supabaseAdmin
 			.from('orders')
 			.insert({
 				order_no: orderNo,
@@ -115,16 +120,16 @@ export async function createOrder(
 	}
 	if (!orderId) throw new Error('주문번호 생성에 실패했습니다. 다시 시도해 주세요.');
 
-	// 4) 주문 상품 스냅샷 저장 (실패 시 주문 롤백)
-	const { error: itemsErr } = await supabase
+	// 4) 주문 상품 스냅샷 저장 (실패 시 주문 롤백) — admin 으로 쓰기/삭제
+	const { error: itemsErr } = await supabaseAdmin
 		.from('order_items')
 		.insert(toOrderItemRows(orderId, lines));
 	if (itemsErr) {
-		await supabase.from('orders').delete().eq('id', orderId);
+		await supabaseAdmin.from('orders').delete().eq('id', orderId);
 		throw new Error('주문 상품 저장에 실패했습니다.');
 	}
 
-	// 5) 장바구니 비우기 (주문 성공 후)
+	// 5) 장바구니 비우기 (주문 성공 후) — 본인 것이므로 user client
 	await supabase.from('cart_items').delete().eq('user_id', userId);
 
 	return { orderNo, total };
