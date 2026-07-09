@@ -47,6 +47,7 @@
 
 - **재고 수량 개념 없음.** products.status enum(on_sale/sold_out/hidden)으로만 관리. quantity/stock 컬럼을 만들지 말 것 (클라이언트 확정 요구사항)
 - **가격 서버 재계산.** 주문 금액은 클라이언트 값을 신뢰하지 않고 서버에서 DB 가격 기준으로 재계산
+- **주문 생성은 서버(secret 키) 전용.** orders/order_items INSERT·롤백은 `supabaseAdmin`으로만. 사용자 self-insert 정책 없음(Data API 직접 주문 삽입 차단). cart_items 조회/삭제만 user client. (근거: decision-log 2026-07-09)
 - **주문 스냅샷.** order_items에 주문 시점의 product_name/option_name/unit_price 복사 저장
 - **admin 권한은 서버에서 검증.** +page.server.ts / hooks에서 profiles.role='admin' 확인. 프론트 가드만으로 처리 금지. 모든 테이블 RLS 필수
 - **전화문의 상품**: price null + is_price_hidden=true → 구매 버튼 대신 tel:010-4055-3338 링크. 장바구니/주문 진입 차단
