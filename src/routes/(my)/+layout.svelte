@@ -3,6 +3,7 @@
 	// 사이트 공통 헤더/GNB/푸터는 이후 단계에서 구현(현재는 (shop) 그룹 전용).
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
+	import { enhance } from '$app/forms';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
@@ -43,6 +44,14 @@
 						{item.label}
 					</a>
 				{/each}
+				<form method="POST" action="/logout" use:enhance class="border-t border-line-2">
+					<button
+						type="submit"
+						class="min-h-11 w-full border-l-[3px] border-transparent px-[22px] py-[13px] text-left text-[15px] font-semibold text-sub hover:bg-bg hover:text-navy"
+					>
+						로그아웃
+					</button>
+				</form>
 			</nav>
 		</aside>
 

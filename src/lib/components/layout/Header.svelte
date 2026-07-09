@@ -5,8 +5,9 @@
 	 * (모바일 전화 노출은 MobileBottomBar 가 담당 — 디자인 시스템 "전화 상시 노출" 규칙)
 	 */
 	import { resolve } from '$app/paths';
+	import { enhance } from '$app/forms';
 
-	let { tel = '010-4055-3338' }: { tel?: string } = $props();
+	let { tel = '010-4055-3338', loggedIn = false }: { tel?: string; loggedIn?: boolean } = $props();
 </script>
 
 <div class="border-b border-line bg-surface">
@@ -17,9 +18,18 @@
 				>부산 장애인편의시설 · 안전용품 전문 &nbsp;|&nbsp; 제품 판매 및 시공</span
 			>
 			<nav aria-label="유틸리티 메뉴" class="flex items-center gap-[18px]">
-				<a href={resolve('/login')} class="text-footer-text hover:text-white">로그인</a>
-				<a href={resolve('/signup')} class="text-footer-text hover:text-white">회원가입</a>
-				<a href={resolve('/mypage/orders')} class="text-footer-text hover:text-white">주문조회</a>
+				{#if loggedIn}
+					<a href={resolve('/mypage/orders')} class="text-footer-text hover:text-white"
+						>마이페이지</a
+					>
+					<form method="POST" action="/logout" use:enhance class="contents">
+						<button type="submit" class="text-footer-text hover:text-white">로그아웃</button>
+					</form>
+				{:else}
+					<a href={resolve('/login')} class="text-footer-text hover:text-white">로그인</a>
+					<a href={resolve('/signup')} class="text-footer-text hover:text-white">회원가입</a>
+					<a href={resolve('/mypage/orders')} class="text-footer-text hover:text-white">주문조회</a>
+				{/if}
 				<a href={resolve('/inquiry')} class="text-footer-text hover:text-white">고객센터</a>
 			</nav>
 		</div>

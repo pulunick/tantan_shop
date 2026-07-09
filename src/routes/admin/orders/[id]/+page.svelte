@@ -15,12 +15,24 @@
 
 	const statusOptions = STATUS_TABS.filter((t) => t.value !== 'all');
 
-	// 상태/송장 입력값은 로드 시점의 주문 스냅샷 1회로 초기화한다(의도적으로 초기값만 캡처).
+	// 상태/송장 입력값은 로드 시점의 주문 값으로 초기화한다(최초 1회, SSR/첫 페인트용).
 	const order = untrack(() => data.order);
 	let selectedStatus = $state(order.order_status);
 	let trackingCompany = $state(order.tracking_company ?? '');
 	let trackingNo = $state(order.tracking_no ?? '');
 	let submitting = $state(false);
+
+	// 저장(use:enhance → invalidateAll) 후 서버 데이터로 폼 값을 재동기화한다.
+	// 위 $state 는 최초 로드값만 캡처하므로, 이 동기화가 없으면 저장에 성공해도
+	// 드롭다운/송장 입력이 저장 전 값으로 남아 관리자가 미반영으로 오해한다.
+	// data.order 는 서버 재로드(invalidateAll) 시에만 바뀌므로, 저장 전 입력 중인
+	// 선택은 덮어쓰지 않는다(검증 실패 시 fail 응답은 invalidate 하지 않음).
+	$effect(() => {
+		const o = data.order;
+		selectedStatus = o.order_status;
+		trackingCompany = o.tracking_company ?? '';
+		trackingNo = o.tracking_no ?? '';
+	});
 
 	let requiresTracking = $derived(selectedStatus === 'shipping');
 </script>

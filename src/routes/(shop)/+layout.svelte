@@ -21,12 +21,13 @@
 	const categories = $derived(data.categories ?? []);
 	const company = $derived(data.company ?? fallbackCompany);
 	const tel = $derived(company.tel || DEFAULT_TEL);
+	const loggedIn = $derived(!!data.session);
 
 	let drawerOpen = $state(false);
 </script>
 
 <div class="flex min-h-dvh flex-col pb-[66px] tb:pb-0">
-	<Header {tel} />
+	<Header {tel} {loggedIn} />
 	<Gnb {categories} />
 
 	<main class="mx-auto w-full max-w-[1200px] flex-1 px-6 py-6">
