@@ -1,0 +1,99 @@
+import type { PageServerLoad } from './$types';
+import type { OrderStatus } from '$lib/types';
+import { STATUS_TABS } from './shared';
+
+/**
+ * 주문 관리 목록. 상태 탭 + 주문번호/받는분 이름 검색 + 페이지네이션.
+ * admin RLS(orders_select_own_or_admin) 로 전체 주문이 조회된다.
+ */
+
+const PAGE_SIZE = 20;
+
+export type OrderListItem = {
+	id: string;
+	order_no: string;
+	created_at: string;
+	receiver_name: string;
+	order_status: OrderStatus;
+	total_amount: number;
+	itemSummary: string;
+};
+
+type OrderItemNameRow = { product_name: string };
+type OrderRow = {
+	id: string;
+	order_no: string;
+	created_at: string;
+	receiver_name: string;
+	order_status: OrderStatus;
+	total_amount: number;
+	order_items: OrderItemNameRow[] | null;
+};
+
+function summarize(items: OrderItemNameRow[] | null): string {
+	const list = items ?? [];
+	if (list.length === 0) return '주문 상품 없음';
+	const rest = list.length - 1;
+	return rest > 0 ? `${list[0].product_name} 외 ${rest}건` : list[0].product_name;
+}
+
+function parseStatus(value: string | null): OrderStatus | 'all' {
+	const found = STATUS_TABS.find((t) => t.value === value);
+	return found ? found.value : 'all';
+}
+
+function parsePage(value: string | null): number {
+	const n = Number(value);
+	return Number.isInteger(n) && n > 0 ? n : 1;
+}
+
+export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
+	const status = parseStatus(url.searchParams.get('status'));
+	const q = url.searchParams.get('q')?.trim() ?? '';
+	const page = parsePage(url.searchParams.get('page'));
+
+	// 상태 탭 카운트 (검색어와 무관하게 전체 기준)
+	const counts = await Promise.all(
+		STATUS_TABS.map(async (tab) => {
+			let cq = supabase.from('orders').select('id', { count: 'exact', head: true });
+			if (tab.value !== 'all') cq = cq.eq('order_status', tab.value);
+			const { count } = await cq;
+			return [tab.value, count ?? 0] as const;
+		})
+	);
+	const countMap = Object.fromEntries(counts) as Record<OrderStatus | 'all', number>;
+
+	let query = supabase
+		.from('orders')
+		.select(
+			'id, order_no, created_at, receiver_name, order_status, total_amount, order_items(product_name)',
+			{ count: 'exact' }
+		);
+
+	if (status !== 'all') query = query.eq('order_status', status);
+	if (q) query = query.or(`order_no.ilike.%${q}%,receiver_name.ilike.%${q}%`);
+
+	const from = (page - 1) * PAGE_SIZE;
+	const to = from + PAGE_SIZE - 1;
+	const { data, count } = await query.order('created_at', { ascending: false }).range(from, to);
+
+	const orders: OrderListItem[] = ((data ?? []) as OrderRow[]).map((o) => ({
+		id: o.id,
+		order_no: o.order_no,
+		created_at: o.created_at,
+		receiver_name: o.receiver_name,
+		order_status: o.order_status,
+		total_amount: o.total_amount,
+		itemSummary: summarize(o.order_items)
+	}));
+
+	return {
+		orders,
+		total: count ?? 0,
+		page,
+		pageSize: PAGE_SIZE,
+		status,
+		q,
+		countMap
+	};
+};

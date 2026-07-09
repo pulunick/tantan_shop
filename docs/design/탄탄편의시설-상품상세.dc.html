@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#F7F8FA;font-family:'Pretendard',system-ui,sans-serif;color:#1a1d24;-webkit-font-smoothing:antialiased}
+  a{color:#1F3864;text-decoration:none}
+  a:hover{color:#8F6A00}
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:#c9ced6;border-radius:8px}
+  .tt-mobile-search,.tt-mobile-menu,.tt-buybar{display:none}
+  @media(max-width:900px){ .tt-detail{grid-template-columns:1fr!important} }
+  @media(max-width:820px){
+    .tt-desk-util{display:none!important}
+    .tt-search{display:none!important}
+    .tt-mobile-search{display:flex!important}
+    .tt-mobile-menu{display:flex!important}
+    .tt-gnb{display:none!important}
+    .tt-buybar{display:block!important}
+    body{padding-bottom:80px}
+  }
+</style>
+</helmet>
+
+<div style="width:100%;background:#fff;border-bottom:1px solid #eceef2">
+  <div class="tt-desk-util" style="background:#141b2b;color:#c7cdda">
+    <div style="max-width:1200px;margin:0 auto;padding:7px 24px;display:flex;justify-content:space-between;align-items:center;font-size:13px">
+      <span style="color:#9aa4ba">부산 장애인편의시설 · 안전용품 전문 &nbsp;|&nbsp; 제품 판매 및 시공</span>
+      <div style="display:flex;gap:18px;align-items:center">
+        <a href="#" style="color:#c7cdda">로그인</a>
+        <a href="#" style="color:#c7cdda">회원가입</a>
+        <a href="#" style="color:#c7cdda">주문조회</a>
+        <a href="#" style="color:#c7cdda">고객센터</a>
+      </div>
+    </div>
+  </div>
+  <header style="max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:28px">
+    <a href="탄탄편의시설-메인.dc.html" style="display:flex;align-items:center;gap:12px;flex:none">
+      <span style="width:46px;height:46px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:6px">
+        <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:15px;letter-spacing:-1px">탄탄</span>
+      </span>
+      <span style="display:flex;flex-direction:column;line-height:1.15">
+        <span style="font-size:22px;font-weight:900;color:#1F3864;letter-spacing:-1px">탄탄 편의시설</span>
+        <span style="font-size:11px;color:#6b7488;font-weight:600;letter-spacing:.4px">TANTAN CONVENIENCE FACILITIES</span>
+      </span>
+    </a>
+    <div class="tt-search" style="flex:1;max-width:520px;margin:0 auto">
+      <div style="display:flex;border:2px solid #1F3864;border-radius:9px;overflow:hidden">
+        <input placeholder="점자블럭, 카스토퍼, 안전손잡이 검색" style="flex:1;border:0;padding:12px 16px;font-size:15px;font-family:inherit;outline:none"/>
+        <button style="border:0;background:#1F3864;color:#fff;padding:0 22px;font-size:15px;font-weight:700;cursor:pointer">검색</button>
+      </div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:16px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;gap:10px;background:#F2B705;color:#1F3864;padding:9px 16px;border-radius:9px;font-weight:800">
+        <span style="width:30px;height:30px;border-radius:50%;background:#1F3864;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg></span>
+        <span style="display:flex;flex-direction:column;line-height:1.15">
+          <span style="font-size:10.5px;font-weight:700;opacity:.75">대표번호 · 시공문의</span>
+          <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">{{ phone }}</span>
+        </span>
+      </a>
+      <a href="#" class="tt-mobile-search" title="검색" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l4.5 4.5"/></svg></a>
+      <a href="#" class="tt-mobile-menu" onClick="{{ openDrawer }}" title="메뉴" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></a>
+      <a href="#" title="장바구니" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.2l2.1 11h10l2-8H6"/></svg></a>
+    </div>
+  </header>
+  <nav class="tt-gnb" style="background:#1F3864">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center">
+        <div onMouseEnter="{{ openProducts }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="탄탄편의시설-상품리스트.dc.html" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">상품 ▾</a>
+          <div style="display:{{ productsOpen }};position:absolute;top:100%;left:0;min-width:238px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:11px 20px;font-size:15px;font-weight:800;color:#1F3864" style-hover="background:#eef2f8">전체 상품 보기</a>
+            <div style="height:1px;background:#eef0f3;margin:5px 0"></div>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">장애인편의시설</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">점자블럭</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">핸드레일</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+          </div>
+        </div>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">시공사례</a>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">회사소개</a>
+        <div onMouseEnter="{{ openSupport }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">고객센터 ▾</a>
+          <div style="display:{{ supportOpen }};position:absolute;top:100%;left:0;min-width:182px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">공지사항</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">문의하기</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">자료실</a>
+          </div>
+        </div>
+      </div>
+      <a href="#" style="display:inline-flex;align-items:center;gap:7px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:10px 18px;border-radius:8px;white-space:nowrap" style-hover="background:#ffc933"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </nav>
+</div>
+
+<!-- BREADCRUMB -->
+<div style="max-width:1200px;margin:0 auto;padding:18px 24px 0;font-size:13px;color:#6b7488;font-weight:600">
+  <a href="탄탄편의시설-메인.dc.html" style="color:#6b7488">홈</a> &nbsp;›&nbsp; <a href="탄탄편의시설-상품리스트.dc.html" style="color:#6b7488">점자블럭</a> &nbsp;›&nbsp; <span style="color:#1F3864">{{ name }}</span>
+</div>
+
+<!-- STATE PREVIEW SWITCHER -->
+<div style="max-width:1200px;margin:14px auto 0;padding:0 24px">
+  <div style="background:#fff;border:1px dashed #c7cfdb;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <span style="font-size:13px;font-weight:800;color:#1F3864">상태 미리보기</span>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{ setSale }}" style="border:0;background:{{ vSaleBg }};color:{{ vSaleColor }};font-size:14px;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer">판매중</button>
+      <button onClick="{{ setSold }}" style="border:0;background:{{ vSoldBg }};color:{{ vSoldColor }};font-size:14px;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer">품절</button>
+      <button onClick="{{ setPhone }}" style="border:0;background:{{ vPhoneBg }};color:{{ vPhoneColor }};font-size:14px;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer">전화문의</button>
+    </div>
+    <span style="font-size:12.5px;color:#6b7488">* 구매 패널의 3가지 상태를 전환해 볼 수 있는 시안용 컨트롤입니다.</span>
+  </div>
+</div>
+
+<!-- PRODUCT -->
+<div class="tt-detail" style="max-width:1200px;margin:22px auto 0;padding:0 24px;display:grid;grid-template-columns:1fr 460px;gap:40px;align-items:start">
+
+  <!-- GALLERY -->
+  <div>
+    <div style="position:relative;aspect-ratio:1/1;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 14px,#e5e8ee 14px,#e5e8ee 28px);border:1px solid #e6e9ee;border-radius:12px;display:flex;align-items:center;justify-content:center">
+      <span style="font-family:ui-monospace,monospace;font-size:13px;color:#6b7488;background:rgba(255,255,255,.82);padding:7px 14px;border-radius:7px">{{ mainLabel }}</span>
+      <div style="position:absolute;inset:0;background:rgba(247,248,250,.6);display:{{ soldBadgeShow }};align-items:center;justify-content:center;border-radius:12px">
+        <span style="background:#141b2b;color:#fff;font-weight:800;font-size:20px;padding:12px 30px;border-radius:10px">품절</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px">
+      <sc-for list="{{ thumbs }}" as="t" hint-placeholder-count="4">
+        <button onClick="{{ t.onClick }}" style="aspect-ratio:1/1;border:2px solid {{ t.border }};border-radius:9px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 9px,#e5e8ee 9px,#e5e8ee 18px);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
+          <span style="font-family:ui-monospace,monospace;font-size:10.5px;color:#6b7488;background:rgba(255,255,255,.8);padding:3px 7px;border-radius:5px">{{ t.label }}</span>
+        </button>
+      </sc-for>
+    </div>
+  </div>
+
+  <!-- PURCHASE PANEL -->
+  <div style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:28px 28px 30px">
+    <span style="display:inline-block;font-size:13px;font-weight:700;color:#6b7488;margin-bottom:9px">{{ cat }}</span>
+    <h1 style="margin:0 0 10px;font-size:25px;font-weight:900;line-height:1.35;letter-spacing:-.5px">{{ name }}</h1>
+    <div style="font-size:13.5px;color:#6b7488;font-weight:600">상품코드 &nbsp;{{ code }}</div>
+    <div style="height:1px;background:#eef0f3;margin:20px 0"></div>
+
+    <!-- price: normal -->
+    <div style="display:{{ priceNormalShow }};align-items:baseline;gap:10px;flex-wrap:wrap">
+      <span style="font-size:34px;font-weight:900;letter-spacing:-1px;white-space:nowrap">2,800원</span>
+      <span style="font-size:13px;color:#6b7488;font-weight:600;white-space:nowrap">(VAT 포함 · 낱개 단가)</span>
+    </div>
+    <!-- price: phone inquiry -->
+    <div style="display:{{ pricePhoneShow }}">
+      <span style="font-size:27px;font-weight:900;color:#8F6A00;letter-spacing:-.5px">가격은 전화 문의</span>
+      <div style="margin-top:8px;font-size:14px;color:#6b7488;line-height:1.55">주문제작 · 시공 포함 상품으로, 규격과 수량에 따라<br/>전화 상담 후 정확한 견적을 안내드립니다.</div>
+    </div>
+
+    <!-- option -->
+    <div style="display:{{ optionShow }};margin-top:24px">
+      <label style="display:block;font-size:14px;font-weight:800;color:#1a1d24;margin-bottom:8px">규격 선택</label>
+      <select value="{{ optionValue }}" onChange="{{ onOption }}" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;font-weight:600;font-family:inherit;color:#1a1d24;background:#fff;cursor:pointer">
+        <option value="점형">점형 (경고용 · 돌기형)</option>
+        <option value="선형">선형 (유도용 · 줄형)</option>
+      </select>
+    </div>
+
+    <!-- qty + total -->
+    <div style="display:{{ qtyShow }};margin-top:22px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <span style="font-size:14px;font-weight:800">수량</span>
+        <div style="display:flex;align-items:center;border:1px solid #d4d9e0;border-radius:9px;overflow:hidden">
+          <button onClick="{{ dec }}" style="width:42px;height:44px;border:0;background:#f7f8fa;font-size:20px;font-weight:700;color:#1F3864;cursor:pointer">−</button>
+          <span style="width:56px;text-align:center;font-size:16px;font-weight:800">{{ qty }}</span>
+          <button onClick="{{ inc }}" style="width:42px;height:44px;border:0;background:#f7f8fa;font-size:20px;font-weight:700;color:#1F3864;cursor:pointer">+</button>
+        </div>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:20px;padding-top:18px;border-top:1px solid #eef0f3">
+        <span style="font-size:15px;font-weight:700;color:#6b7488">합계 금액</span>
+        <span style="font-size:28px;font-weight:900;color:#1F3864;letter-spacing:-.5px">{{ totalText }}</span>
+      </div>
+    </div>
+
+    <!-- buttons: SALE -->
+    <div style="display:{{ grpSaleShow }};gap:12px;margin-top:24px">
+      <button style="flex:1;border:2px solid #1F3864;background:#fff;color:#1F3864;font-size:16px;font-weight:800;padding:15px 0;border-radius:10px;cursor:pointer">장바구니 담기</button>
+      <button style="flex:1;border:0;background:#1F3864;color:#fff;font-size:16px;font-weight:800;padding:15px 0;border-radius:10px;cursor:pointer">바로 구매</button>
+    </div>
+    <!-- buttons: SOLD -->
+    <div style="display:{{ grpSoldShow }};margin-top:24px">
+      <div style="background:#fbf1f1;border:1px solid #f0d5d5;border-radius:10px;padding:14px 16px;font-size:14px;color:#a3403a;font-weight:600;line-height:1.5">일시 품절된 상품입니다. 재입고 및 대량 구매 문의는 <b>{{ phone }}</b> 로 연락 주세요.</div>
+      <div style="display:flex;gap:12px;margin-top:14px">
+        <button disabled style="flex:1;border:1px solid #dfe3e9;background:#f2f4f7;color:#a6adb8;font-size:16px;font-weight:800;padding:15px 0;border-radius:10px;cursor:not-allowed">장바구니 담기</button>
+        <button disabled style="flex:1;border:0;background:#c7ccd4;color:#fff;font-size:16px;font-weight:800;padding:15px 0;border-radius:10px;cursor:not-allowed">품절</button>
+      </div>
+    </div>
+    <!-- buttons: PHONE -->
+    <div style="display:{{ grpPhoneShow }};margin-top:24px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#F2B705;color:#1F3864;font-size:17px;font-weight:800;padding:16px 0;border-radius:10px" style-hover="background:#ffc933"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>전화 문의하기 {{ phone }}</a>
+    </div>
+
+    <div style="margin-top:18px;font-size:12.5px;color:#6b7488;line-height:1.7">· 배송비 착불 · 중량/대량 주문은 화물 배송으로 안내드립니다.<br/>· 세금계산서 발행 및 관공서 견적 상담 가능합니다.</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div style="max-width:1200px;margin:44px auto 0;padding:0 24px">
+  <div style="display:flex;border-bottom:2px solid #e6e9ee">
+    <button onClick="{{ setDetail }}" style="border:0;background:none;font-size:16px;font-weight:800;padding:14px 26px;cursor:pointer;color:{{ tdColor }};border-bottom:3px solid {{ tdMark }};margin-bottom:-2px">상세정보</button>
+    <button onClick="{{ setDelivery }}" style="border:0;background:none;font-size:16px;font-weight:800;padding:14px 26px;cursor:pointer;color:{{ tvColor }};border-bottom:3px solid {{ tvMark }};margin-bottom:-2px">배송 · 교환/반품 안내</button>
+  </div>
+
+  <!-- detail content -->
+  <div style="display:{{ tabDetailShow }};padding:28px 4px">
+    <h3 style="margin:0 0 14px;font-size:19px;font-weight:900">제품 사양</h3>
+    <div style="border:1px solid #e6e9ee;border-radius:10px;overflow:hidden;max-width:640px">
+      <sc-for list="{{ specs }}" as="s" hint-placeholder-count="5">
+        <div style="display:flex;border-top:1px solid #eef0f3;font-size:15px">
+          <div style="width:130px;flex:none;background:#f7f8fa;padding:13px 18px;font-weight:800;color:#1F3864">{{ s.k }}</div>
+          <div style="flex:1;padding:13px 18px;color:#3a4252">{{ s.v }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <p style="margin:22px 0 14px;font-size:15px;line-height:1.75;color:#3a4252;max-width:760px">시각장애인의 보행 안전을 위한 자기질 점자블럭입니다. 표면 논슬립 처리로 미끄럼을 방지하며, 실내·외 바닥에 견고하게 시공됩니다. 관공서·공공시설 규격에 맞춰 제작·납품하며 현장 시공도 함께 진행합니다.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:760px">
+      <div style="aspect-ratio:16/10;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 12px,#e5e8ee 12px,#e5e8ee 24px);border-radius:10px;display:flex;align-items:center;justify-content:center"><span style="font-family:ui-monospace,monospace;font-size:12px;color:#6b7488;background:rgba(255,255,255,.82);padding:5px 11px;border-radius:6px">상세 이미지 1</span></div>
+      <div style="aspect-ratio:16/10;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 12px,#e5e8ee 12px,#e5e8ee 24px);border-radius:10px;display:flex;align-items:center;justify-content:center"><span style="font-family:ui-monospace,monospace;font-size:12px;color:#6b7488;background:rgba(255,255,255,.82);padding:5px 11px;border-radius:6px">시공 예시</span></div>
+    </div>
+  </div>
+
+  <!-- delivery content -->
+  <div style="display:{{ tabDeliveryShow }};padding:28px 4px;max-width:760px">
+    <h3 style="margin:0 0 14px;font-size:19px;font-weight:900">배송 안내</h3>
+    <ul style="margin:0 0 26px;padding-left:18px;font-size:15px;line-height:1.9;color:#3a4252">
+      <li>배송 방법 : 택배 / 중량·대량 주문은 화물(용달) 배송</li>
+      <li>배송비 : 착불 (지역 및 수량에 따라 협의)</li>
+      <li>배송 기간 : 결제 확인 후 3~7일 (주문제작 상품은 별도 안내)</li>
+    </ul>
+    <h3 style="margin:0 0 14px;font-size:19px;font-weight:900">교환 · 반품 안내</h3>
+    <ul style="margin:0;padding-left:18px;font-size:15px;line-height:1.9;color:#3a4252">
+      <li>상품 수령 후 7일 이내 교환·반품 접수 가능 (사전 전화 접수)</li>
+      <li>단순 변심에 의한 반품 시 왕복 배송비는 구매자 부담입니다.</li>
+      <li>주문제작 · 시공 포함 상품, 사용·설치된 상품은 교환·반품이 제한됩니다.</li>
+      <li>파손 상품 수령 시 수령일 기준 3일 이내 사진과 함께 연락 주세요.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="margin-top:60px;background:#141b2b;color:#a8b2c7">
+  <div style="max-width:1200px;margin:0 auto;padding:44px 24px 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px">
+    <div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+        <span style="width:38px;height:38px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:5px">
+          <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:12px">탄탄</span>
+        </span>
+        <span style="color:#fff;font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      </div>
+      <div style="font-size:13.5px;line-height:2;color:#a8b2c7">
+        상호 <span style="color:#dfe4ee">탄탄</span> &nbsp;·&nbsp; 대표 <span style="color:#dfe4ee">황희춘</span><br/>
+        사업자등록번호 <span style="color:#dfe4ee">793-09-02836</span><br/>
+        부산광역시 수영구 과정로15번길 8-1, 1층 (망미동)<br/>
+        대표번호 <span style="color:#dfe4ee">{{ phone }}</span>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:14px">
+        <a href="#" style="color:#dfe4ee;font-size:13.5px;font-weight:600">이용약관</a>
+        <span style="color:#3a4459">|</span>
+        <a href="#" style="color:#dfe4ee;font-size:13.5px;font-weight:600">개인정보처리방침</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">바로가기</div>
+      <div style="display:grid;gap:9px;font-size:13.5px">
+        <a href="#" style="color:#a8b2c7">회사소개</a>
+        <a href="탄탄편의시설-상품리스트.dc.html" style="color:#a8b2c7">상품 전체보기</a>
+        <a href="#" style="color:#a8b2c7">시공사례</a>
+        <a href="#" style="color:#a8b2c7">공지사항 · 자료실</a>
+        <a href="#" style="color:#a8b2c7">온라인 문의</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">무통장 입금 계좌</div>
+      <div style="background:#1c2436;border:1px solid #2a344a;border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.7">
+        <div style="color:#a8b2c7">입금 계좌 안내</div>
+        <div style="color:#fff;font-weight:800;font-size:16px;margin-top:4px;font-family:ui-monospace,monospace">○○은행 000-0000-0000</div>
+        <div style="color:#dfe4ee;margin-top:2px">예금주 : 황희춘 (탄탄)</div>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:1px solid #242d40">
+    <div style="max-width:1200px;margin:0 auto;padding:16px 24px;font-size:12.5px;color:#8a94aa">© 2026 탄탄 편의시설. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- MOBILE MENU DRAWER -->
+<div style="position:fixed;inset:0;z-index:80;display:{{ drawerShow }}">
+  <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:rgba(10,15,25,.5)"></div>
+  <div style="position:absolute;top:0;left:0;bottom:0;width:300px;max-width:86%;background:#fff;overflow-y:auto;box-shadow:2px 0 24px rgba(0,0,0,.22);display:flex;flex-direction:column">
+    <div style="background:#1F3864;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:8px;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <a href="#" style="display:flex;align-items:center;gap:9px;padding:15px 20px;font-size:15px;font-weight:700;color:#1F3864;border-bottom:1px solid #eef0f3;background:#f7f9fc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>로그인 / 회원가입</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">상품 카테고리</div>
+    <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:12px 20px;font-size:15.5px;font-weight:800;color:#1F3864;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">전체 상품 보기</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">장애인편의시설</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">점자블럭</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">핸드레일</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">고객지원</div>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">시공사례</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">회사소개</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">공지사항</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">문의하기</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">자료실</a>
+    <div style="margin-top:auto;padding:18px 20px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:13px;border-radius:9px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE PURCHASE BAR -->
+<div class="tt-buybar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid #e2e5ea;box-shadow:0 -2px 12px rgba(20,27,43,.1);z-index:50;padding:10px 16px">
+  <div style="display:{{ mSaleShow }};gap:10px">
+    <button style="flex:1;border:2px solid #1F3864;background:#fff;color:#1F3864;font-size:15px;font-weight:800;padding:13px 0;border-radius:9px;cursor:pointer">장바구니</button>
+    <button style="flex:1;border:0;background:#1F3864;color:#fff;font-size:15px;font-weight:800;padding:13px 0;border-radius:9px;cursor:pointer">바로 구매</button>
+  </div>
+  <div style="display:{{ mSoldShow }}">
+    <button disabled style="width:100%;border:0;background:#c7ccd4;color:#fff;font-size:15px;font-weight:800;padding:14px 0;border-radius:9px;cursor:not-allowed">일시 품절</button>
+  </div>
+  <div style="display:{{ mPhoneShow }}">
+    <a href="tel:{{ phone }}" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F2B705;color:#1F3864;font-size:16px;font-weight:800;padding:14px 0;border-radius:9px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>전화 문의하기</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:1500},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;010-4055-3338&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;연락처&quot;}}">
+class Component extends DCLogic {
+  state = { variant: 'sale', qty: 1, thumb: 0, option: '점형', tab: 'detail', openMenu: null, drawerOpen: false };
+
+  renderVals() {
+    const phone = this.props.phone ?? '010-4055-3338';
+    const price = 2800;
+    const won = (n) => n.toLocaleString('ko-KR') + '원';
+    const v = this.state.variant;
+
+    const vBtn = (k) => ({ bg: v === k ? '#1F3864' : '#eef2f8', color: v === k ? '#fff' : '#1F3864' });
+    const sale = vBtn('sale'), sold = vBtn('sold'), ph = vBtn('phone');
+
+    const thumbs = [0, 1, 2, 3].map(i => ({
+      label: '사진 ' + (i + 1),
+      border: i === this.state.thumb ? '#1F3864' : '#e6e9ee',
+      onClick: () => this.setState({ thumb: i }),
+    }));
+
+    const specs = [
+      { k: '소재', v: '자기질 (도기질) · 논슬립 표면' },
+      { k: '규격', v: '300 × 300 × 15T (mm)' },
+      { k: '색상', v: '황색 / 스틸그레이' },
+      { k: '유형', v: '점형(경고) · 선형(유도)' },
+      { k: '용도', v: '시각장애인 보행 유도 · 경고 블럭' },
+    ];
+
+    const tab = this.state.tab;
+
+    return {
+      phone, name: '자기질 점자블럭(논슬립) 15T', cat: '점자블럭 / 디자인블럭', code: 'TT-BR-15T',
+      mainLabel: '대표 이미지 ' + (this.state.thumb + 1),
+      thumbs, specs,
+      optionValue: this.state.option,
+      onOption: (e) => this.setState({ option: e.target.value }),
+      qty: this.state.qty,
+      totalText: won(price * this.state.qty),
+      dec: () => this.setState(s => ({ qty: Math.max(1, s.qty - 1) })),
+      inc: () => this.setState(s => ({ qty: s.qty + 1 })),
+
+      priceNormalShow: v === 'phone' ? 'none' : 'flex',
+      pricePhoneShow: v === 'phone' ? 'block' : 'none',
+      soldBadgeShow: v === 'sold' ? 'flex' : 'none',
+      optionShow: v === 'phone' ? 'none' : 'block',
+      qtyShow: v === 'phone' ? 'none' : 'block',
+      grpSaleShow: v === 'sale' ? 'flex' : 'none',
+      grpSoldShow: v === 'sold' ? 'block' : 'none',
+      grpPhoneShow: v === 'phone' ? 'block' : 'none',
+      mSaleShow: v === 'sale' ? 'flex' : 'none',
+      mSoldShow: v === 'sold' ? 'block' : 'none',
+      mPhoneShow: v === 'phone' ? 'block' : 'none',
+
+      vSaleBg: sale.bg, vSaleColor: sale.color,
+      vSoldBg: sold.bg, vSoldColor: sold.color,
+      vPhoneBg: ph.bg, vPhoneColor: ph.color,
+      setSale: () => this.setState({ variant: 'sale' }),
+      setSold: () => this.setState({ variant: 'sold' }),
+      setPhone: () => this.setState({ variant: 'phone' }),
+
+      tabDetailShow: tab === 'detail' ? 'block' : 'none',
+      tabDeliveryShow: tab === 'delivery' ? 'block' : 'none',
+      tdColor: tab === 'detail' ? '#1F3864' : '#6b7488',
+      tdMark: tab === 'detail' ? '#1F3864' : 'transparent',
+      tvColor: tab === 'delivery' ? '#1F3864' : '#6b7488',
+      tvMark: tab === 'delivery' ? '#1F3864' : 'transparent',
+      setDetail: () => this.setState({ tab: 'detail' }),
+      setDelivery: () => this.setState({ tab: 'delivery' }),
+
+      productsOpen: this.state.openMenu === 'products' ? 'block' : 'none',
+      supportOpen: this.state.openMenu === 'support' ? 'block' : 'none',
+      openProducts: () => this.setState({ openMenu: 'products' }),
+      openSupport: () => this.setState({ openMenu: 'support' }),
+      closeMenu: () => this.setState({ openMenu: null }),
+      drawerShow: this.state.drawerOpen ? 'block' : 'none',
+      openDrawer: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ drawerOpen: true }); },
+      closeDrawer: () => this.setState({ drawerOpen: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

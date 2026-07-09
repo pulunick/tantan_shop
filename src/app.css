@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+@plugin '@tailwindcss/forms';
+
+/*
+ * 디자인 토큰 — docs/design-system.md 가 단일 원본.
+ * 색/폰트 값 변경 시 design-system.md 를 먼저 수정한 뒤 여기에 반영한다.
+ */
+@theme {
+	/* 컬러 토큰 (핸드오프 DESIGN_SPEC 반영) */
+	--color-navy: #1f3864; /* 메인, GNB, 헤딩, 솔리드 버튼 */
+	--color-navy-dark: #141b2b; /* 상단 유틸바, 푸터, 관리자 사이드바 */
+	--color-yellow: #f2b705; /* CTA, 배지, 강조 (절제 사용) */
+	--color-yellow-hover: #ffc933; /* 옐로 버튼 hover */
+	--color-bg: #f7f8fa; /* 페이지 배경 */
+	--color-bg-admin: #eef1f5; /* 관리자 페이지 배경 */
+	--color-surface: #ffffff; /* 카드·패널 */
+	--color-ink: #1a1d24; /* 본문 */
+	--color-sub: #6b7488; /* 보조 텍스트 (흰 배경 4.69:1) */
+	--color-phone-price: #8f6a00; /* '전화문의' 가격 표기 (4.5:1+) */
+	--color-footer-text: #a8b2c7; /* 네이비 푸터 위 텍스트 */
+	--color-line: #e6e9ee; /* 보더 */
+	--color-line-2: #e2e5ea; /* 보더(보조) */
+	--color-navy-tint: #eef2f8; /* 연한 네이비 틴트 — 드롭다운 hover, 칩/태그 배경 */
+
+	/* 주문 상태 배지 (bg / fg 쌍) */
+	--color-status-paid-bg: #eef2f8;
+	--color-status-paid-fg: #1f3864; /* 결제완료 */
+	--color-status-preparing-bg: #fbf1d8;
+	--color-status-preparing-fg: #8f6a00; /* 배송준비 */
+	--color-status-shipping-bg: #dde8ff;
+	--color-status-shipping-fg: #234f9e; /* 배송중 */
+	--color-status-delivered-bg: #e2f1e8;
+	--color-status-delivered-fg: #1b6b3a; /* 배송완료 */
+	--color-status-cancelled-bg: #fbf1f1;
+	--color-status-cancelled-fg: #a3403a; /* 취소/환불 */
+
+	/* 타이포 — Pretendard variable (app.html 에서 웹폰트 로드) */
+	--font-sans:
+		'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto,
+		'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+
+	/* 레이아웃 — 브레이크포인트 820px, 컨테이너 1200px */
+	--breakpoint-tb: 820px;
+}
+
+/* 기본 문서 스타일 */
+html {
+	background-color: var(--color-bg);
+	color: var(--color-ink);
+	font-family: var(--font-sans);
+	/* 모바일 하단 고정 바(66px) 만큼 본문 여백 확보 */
+	scroll-behavior: smooth;
+}
+
+body {
+	min-height: 100dvh;
+}

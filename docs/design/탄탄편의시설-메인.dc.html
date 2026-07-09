@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#F7F8FA;font-family:'Pretendard',system-ui,sans-serif;color:#1a1d24;-webkit-font-smoothing:antialiased}
+  a{color:#1F3864;text-decoration:none}
+  a:hover{color:#8F6A00}
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:#c9ced6;border-radius:8px}
+  .tt-mobilebar{display:none}
+  @media(max-width:820px){
+    .tt-desk-util{display:none!important}
+    .tt-search{display:none!important}
+    .tt-mobile-search{display:flex!important}
+    .tt-gnb{display:none!important}
+    .tt-gnb-inner{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+    .tt-cats{grid-template-columns:repeat(2,1fr)!important}
+    .tt-prods{grid-template-columns:repeat(2,1fr)!important}
+    .tt-bottom{grid-template-columns:1fr!important}
+    .tt-mobilebar{display:grid!important}
+    .tt-hero-pad{padding:36px 22px!important}
+    .tt-hero-title{font-size:29px!important}
+    body{padding-bottom:66px}
+  }
+</style>
+</helmet>
+
+<div style="width:100%;background:#fff;border-bottom:1px solid #eceef2">
+
+  <!-- TOP UTILITY BAR -->
+  <div class="tt-desk-util" style="background:#141b2b;color:#c7cdda">
+    <div style="max-width:1200px;margin:0 auto;padding:7px 24px;display:flex;justify-content:space-between;align-items:center;font-size:13px">
+      <span style="color:#9aa4ba">부산 장애인편의시설 · 안전용품 전문 &nbsp;|&nbsp; 제품 판매 및 시공</span>
+      <div style="display:flex;gap:18px;align-items:center">
+        <a href="#" style="color:#c7cdda">로그인</a>
+        <a href="#" style="color:#c7cdda">회원가입</a>
+        <a href="#" style="color:#c7cdda">주문조회</a>
+        <a href="#" style="color:#c7cdda">고객센터</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <header style="max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:28px">
+    <a href="#" style="display:flex;align-items:center;gap:12px;flex:none">
+      <span style="width:46px;height:46px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:6px">
+        <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:15px;letter-spacing:-1px">탄탄</span>
+      </span>
+      <span style="display:flex;flex-direction:column;line-height:1.15">
+        <span style="font-size:22px;font-weight:900;color:#1F3864;letter-spacing:-1px">탄탄 편의시설</span>
+        <span style="font-size:11px;color:#6b7488;font-weight:600;letter-spacing:.4px">TANTAN CONVENIENCE FACILITIES</span>
+      </span>
+    </a>
+    <div class="tt-search" style="flex:1;max-width:520px;margin:0 auto">
+      <div style="display:flex;border:2px solid #1F3864;border-radius:9px;overflow:hidden">
+        <input placeholder="점자블럭, 카스토퍼, 안전손잡이 검색" style="flex:1;border:0;padding:12px 16px;font-size:15px;font-family:inherit;outline:none"/>
+        <button style="border:0;background:#1F3864;color:#fff;padding:0 22px;font-size:15px;font-weight:700;cursor:pointer">검색</button>
+      </div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:16px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;gap:10px;background:#F2B705;color:#1F3864;padding:9px 16px;border-radius:9px;font-weight:800">
+        <span style="width:30px;height:30px;border-radius:50%;background:#1F3864;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg></span>
+        <span style="display:flex;flex-direction:column;line-height:1.15">
+          <span style="font-size:10.5px;font-weight:700;opacity:.75">대표번호 · 시공문의</span>
+          <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">{{ phone }}</span>
+        </span>
+      </a>
+      <a href="#" class="tt-mobile-search" title="검색" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;display:none;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l4.5 4.5"/></svg></a>
+      <a href="#" title="장바구니" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.2l2.1 11h10l2-8H6"/></svg></a>
+    </div>
+  </header>
+
+  <!-- GNB -->
+  <nav class="tt-gnb" style="background:#1F3864">
+    <div class="tt-gnb-inner" style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center">
+        <div onMouseEnter="{{ openProducts }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="탄탄편의시설-상품리스트.dc.html" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">상품 ▾</a>
+          <div style="display:{{ productsOpen }};position:absolute;top:100%;left:0;min-width:238px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:11px 20px;font-size:15px;font-weight:800;color:#1F3864" style-hover="background:#eef2f8">전체 상품 보기</a>
+            <div style="height:1px;background:#eef0f3;margin:5px 0"></div>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">장애인편의시설</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">점자블럭</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">핸드레일</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+          </div>
+        </div>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">시공사례</a>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">회사소개</a>
+        <div onMouseEnter="{{ openSupport }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">고객센터 ▾</a>
+          <div style="display:{{ supportOpen }};position:absolute;top:100%;left:0;min-width:182px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">공지사항</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">문의하기</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">자료실</a>
+          </div>
+        </div>
+      </div>
+      <a href="#" style="display:inline-flex;align-items:center;gap:7px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:10px 18px;border-radius:8px" style-hover="background:#ffc933"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section style="max-width:1200px;margin:24px auto 0;padding:0 24px">
+  <div style="position:relative;border-radius:14px;overflow:hidden;border:1px solid #e6e9ee;box-shadow:0 2px 10px rgba(20,27,43,.06)">
+    <div style="display:{{ s0 }};min-height:400px;background:linear-gradient(105deg,#1F3864 0%,#2a4a82 100%);position:relative">
+      <div style="position:absolute;inset:0;opacity:.12;background:repeating-linear-gradient(45deg,#F2B705,#F2B705 22px,transparent 22px,transparent 60px)"></div>
+      <div class="tt-hero-pad" style="position:relative;padding:64px 56px;max-width:640px">
+        <span style="display:inline-block;background:#F2B705;color:#1F3864;font-weight:800;font-size:13px;padding:5px 13px;border-radius:20px;margin-bottom:18px">제조 · 판매 · 시공 원스톱</span>
+        <h1 class="tt-hero-title" style="margin:0 0 14px;color:#fff;font-size:44px;font-weight:900;line-height:1.2;letter-spacing:-1.5px">장애인편의시설<br/>전문 판매 · 시공</h1>
+        <p style="margin:0 0 26px;color:#c7d2e8;font-size:17px;line-height:1.6">점자블럭 · 카스토퍼 · 핸드레일 · 촉지판까지<br/>관공서 · 건설 · 인테리어 현장에 바로 공급합니다.</p>
+        <a href="#" style="display:inline-flex;align-items:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:16px;padding:14px 26px;border-radius:9px">시공 문의하기 →</a>
+      </div>
+    </div>
+    <div style="display:{{ s1 }};min-height:400px;background:linear-gradient(105deg,#141b2b 0%,#37507f 100%);position:relative">
+      <div style="position:absolute;right:0;top:0;bottom:0;width:42%;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 12px,#e2e6ec 12px,#e2e6ec 24px);display:flex;align-items:center;justify-content:center">
+        <span style="font-family:ui-monospace,monospace;font-size:13px;color:#6b7488;background:rgba(255,255,255,.78);padding:6px 12px;border-radius:6px">현장 시공 사진</span>
+      </div>
+      <div class="tt-hero-pad" style="position:relative;padding:64px 56px;max-width:600px">
+        <span style="display:inline-block;background:#F2B705;color:#1F3864;font-weight:800;font-size:13px;padding:5px 13px;border-radius:20px;margin-bottom:18px">직접 제조 · 착한 가격</span>
+        <h2 class="tt-hero-title" style="margin:0 0 14px;color:#fff;font-size:44px;font-weight:900;line-height:1.2;letter-spacing:-1.5px">중간 마진 없는<br/>제조사 직거래</h2>
+        <p style="margin:0 0 26px;color:#c7d2e8;font-size:17px;line-height:1.6">공장 직접 생산으로 높은 품질을<br/>합리적인 가격에 제공합니다.</p>
+        <a href="#" style="display:inline-flex;align-items:center;gap:8px;background:#fff;color:#1F3864;font-weight:800;font-size:16px;padding:14px 26px;border-radius:9px">전 제품 보기 →</a>
+      </div>
+    </div>
+    <div style="display:{{ s2 }};min-height:400px;background:linear-gradient(105deg,#264a2f 0%,#1F3864 100%);position:relative">
+      <div style="position:absolute;inset:0;opacity:.1;background:radial-gradient(circle at 20px 20px,#F2B705 5px,transparent 6px);background-size:44px 44px"></div>
+      <div class="tt-hero-pad" style="position:relative;padding:64px 56px;max-width:640px">
+        <span style="display:inline-block;background:#F2B705;color:#1F3864;font-weight:800;font-size:13px;padding:5px 13px;border-radius:20px;margin-bottom:18px">관공서 · 대량 납품</span>
+        <h2 class="tt-hero-title" style="margin:0 0 14px;color:#fff;font-size:44px;font-weight:900;line-height:1.2;letter-spacing:-1.5px">대량 구매 견적<br/>빠르게 도와드립니다</h2>
+        <p style="margin:0 0 26px;color:#d3e0d6;font-size:17px;line-height:1.6">세금계산서 발행 · 화물 배송 · 현장 실측까지<br/>담당자가 직접 안내드립니다.</p>
+        <a href="tel:{{ phone }}" style="display:inline-flex;align-items:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:16px;padding:14px 26px;border-radius:9px">☎ 견적 전화하기</a>
+      </div>
+    </div>
+    <div style="position:absolute;bottom:20px;left:56px;display:flex;gap:10px">
+      <button onClick="{{ go0 }}" style="width:34px;height:6px;border:0;border-radius:6px;cursor:pointer;background:{{ d0 }};padding:0"></button>
+      <button onClick="{{ go1 }}" style="width:34px;height:6px;border:0;border-radius:6px;cursor:pointer;background:{{ d1 }};padding:0"></button>
+      <button onClick="{{ go2 }}" style="width:34px;height:6px;border:0;border-radius:6px;cursor:pointer;background:{{ d2 }};padding:0"></button>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORY QUICK LINKS -->
+<section style="max-width:1200px;margin:36px auto 0;padding:0 24px">
+  <div class="tt-cats" style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px">
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="2"/><path d="M12 7v5M7 9h10M9.5 12l-1.5 5.5M14.5 12l1.5 5.5"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">장애인편의시설</span>
+    </a>
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24"><circle cx="8" cy="7" r="1.5" fill="#1F3864"/><circle cx="8" cy="12" r="1.5" fill="#1F3864"/><circle cx="8" cy="17" r="1.5" fill="#1F3864"/><circle cx="14" cy="7" r="1.5" fill="#1F3864"/><circle cx="14" cy="12" r="1.5" fill="#1F3864"/><circle cx="14" cy="17" r="1.5" fill="#1F3864"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">점자블럭</span>
+    </a>
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="5" rx="2"/><path d="M7.5 15v2.5M16.5 15v2.5"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">카스토퍼/주차안전</span>
+    </a>
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4v16"/><path d="M6 11h8a4 4 0 0 1 4 4v5"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">핸드레일</span>
+    </a>
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="4" width="15" height="10" rx="1.5"/><path d="M8 7.5h8M8 10.5h5M12 14v6M9 20h6"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">촉지판/안내판</span>
+    </a>
+    <a href="#" style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 12px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;transition:.15s" style-hover="border-color:#1F3864;box-shadow:0 6px 16px rgba(31,56,100,.13);transform:translateY(-2px)">
+      <span style="width:56px;height:56px;border-radius:50%;background:#eef2f8;display:flex;align-items:center;justify-content:center">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5h-7l-4.5 3.5V15.5H5A1.5 1.5 0 0 1 3.5 14V7A1.5 1.5 0 0 1 5 5.5z"/></svg>
+      </span>
+      <span style="font-size:15px;font-weight:700;color:#1F3864;line-height:1.35">시공문의</span>
+    </a>
+  </div>
+</section>
+
+<!-- RECOMMENDED PRODUCTS -->
+<section style="max-width:1200px;margin:52px auto 0;padding:0 24px">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px">
+    <div>
+      <div style="width:38px;height:4px;background:#F2B705;border-radius:4px;margin-bottom:12px"></div>
+      <h3 style="margin:0;font-size:26px;font-weight:900;letter-spacing:-1px">추천 상품</h3>
+    </div>
+    <a href="#" style="font-size:15px;font-weight:700;color:#6b7488">전체보기 +</a>
+  </div>
+  <div class="tt-prods" style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+    <sc-for list="{{ products }}" as="p" hint-placeholder-count="8">
+      <div style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;overflow:hidden;transition:.15s" style-hover="box-shadow:0 8px 20px rgba(20,27,43,.1);transform:translateY(-3px)">
+        <div style="position:relative;aspect-ratio:1/1;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 11px,#e5e8ee 11px,#e5e8ee 22px);display:flex;align-items:center;justify-content:center">
+          <span style="font-family:ui-monospace,monospace;font-size:11.5px;color:#6b7488;background:rgba(255,255,255,.82);padding:5px 10px;border-radius:6px">{{ p.shot }}</span>
+          <span style="position:absolute;top:10px;left:10px;background:{{ p.badgeBg }};color:{{ p.badgeColor }};font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:6px;display:{{ p.badgeShow }}">{{ p.badge }}</span>
+          <div style="position:absolute;inset:0;background:rgba(247,248,250,.62);display:{{ p.soldShow }};align-items:center;justify-content:center">
+            <span style="background:#141b2b;color:#fff;font-weight:800;font-size:15px;padding:8px 20px;border-radius:8px">품절</span>
+          </div>
+        </div>
+        <div style="padding:16px 16px 18px">
+          <span style="display:inline-block;font-size:11.5px;font-weight:700;color:#6b7488;margin-bottom:7px">{{ p.cat }}</span>
+          <div style="font-size:16px;font-weight:600;line-height:1.45;height:47px;overflow:hidden;color:#1a1d24">{{ p.name }}</div>
+          <div style="margin-top:12px;font-size:21px;font-weight:900;color:{{ p.priceColor }};letter-spacing:-.5px">{{ p.priceText }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</section>
+
+<!-- CONSTRUCTION CASES -->
+<section style="max-width:1200px;margin:56px auto 0;padding:0 24px">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px">
+    <div>
+      <div style="width:38px;height:4px;background:#F2B705;border-radius:4px;margin-bottom:12px"></div>
+      <h3 style="margin:0;font-size:26px;font-weight:900;letter-spacing:-1px">시공사례</h3>
+    </div>
+    <a href="#" style="font-size:15px;font-weight:700;color:#6b7488">전체보기 +</a>
+  </div>
+  <div style="display:flex;gap:18px;overflow-x:auto;padding-bottom:8px">
+    <sc-for list="{{ cases }}" as="k" hint-placeholder-count="4">
+      <a href="#" style="flex:0 0 288px;background:#fff;border:1px solid #e6e9ee;border-radius:12px;overflow:hidden;transition:.15s" style-hover="box-shadow:0 8px 20px rgba(20,27,43,.1)">
+        <div style="height:178px;background:repeating-linear-gradient(45deg,#e7ebf1,#e7ebf1 12px,#dde2ea 12px,#dde2ea 24px);display:flex;align-items:center;justify-content:center">
+          <span style="font-family:ui-monospace,monospace;font-size:12px;color:#6b7488;background:rgba(255,255,255,.82);padding:5px 11px;border-radius:6px">현장 사진</span>
+        </div>
+        <div style="padding:15px 16px 17px">
+          <div style="font-size:15.5px;font-weight:700;color:#1a1d24;line-height:1.4">{{ k.title }}</div>
+          <div style="margin-top:8px;font-size:13px;color:#6b7488;font-weight:600">{{ k.date }}</div>
+        </div>
+      </a>
+    </sc-for>
+  </div>
+</section>
+
+<!-- NOTICES + CUSTOMER CENTER -->
+<section class="tt-bottom" style="max-width:1200px;margin:56px auto 0;padding:0 24px;display:grid;grid-template-columns:1.35fr 1fr;gap:24px">
+  <div style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:26px 28px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <h3 style="margin:0;font-size:20px;font-weight:900;letter-spacing:-.5px">공지사항</h3>
+      <a href="#" style="font-size:14px;font-weight:700;color:#6b7488">더보기 +</a>
+    </div>
+    <sc-for list="{{ notices }}" as="n" hint-placeholder-count="3">
+      <a href="#" style="display:flex;align-items:center;gap:14px;padding:15px 4px;border-top:1px solid #eef0f3" style-hover="background:#fafbfc">
+        <span style="flex:none;font-size:11.5px;font-weight:800;color:#1F3864;background:#eef2f8;padding:4px 10px;border-radius:6px">{{ n.tag }}</span>
+        <span style="flex:1;font-size:15.5px;font-weight:600;color:#1a1d24;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ n.title }}</span>
+        <span style="flex:none;font-size:13px;color:#6b7488;font-weight:600">{{ n.date }}</span>
+      </a>
+    </sc-for>
+  </div>
+  <div style="background:#1F3864;border-radius:12px;padding:28px 28px;color:#fff;position:relative;overflow:hidden">
+    <div style="position:absolute;right:-30px;bottom:-30px;width:150px;height:150px;border-radius:50%;background:rgba(242,183,5,.14)"></div>
+    <div style="position:relative">
+      <span style="font-size:14px;font-weight:700;color:#F2B705">고객센터 · 시공문의</span>
+      <div style="margin:10px 0 6px;font-size:34px;font-weight:900;letter-spacing:-1px">{{ phone }}</div>
+      <div style="display:grid;gap:5px;font-size:14.5px;color:#c7d2e8;margin-top:14px;line-height:1.5">
+        <div>평일 &nbsp;09:00 – 18:00</div>
+        <div>토요일 &nbsp;09:00 – 12:00 &nbsp;(점심 12:00–13:00)</div>
+        <div>일요일 · 공휴일 휴무</div>
+      </div>
+      <a href="tel:{{ phone }}" style="margin-top:20px;display:inline-flex;align-items:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:12px 22px;border-radius:9px">☎ 전화 상담하기</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="margin-top:60px;background:#141b2b;color:#9aa4ba">
+  <div style="max-width:1200px;margin:0 auto;padding:44px 24px 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px">
+    <div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+        <span style="width:38px;height:38px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:5px">
+          <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:12px">탄탄</span>
+        </span>
+        <span style="color:#fff;font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      </div>
+      <div style="font-size:13.5px;line-height:2;color:#a8b2c7">
+        상호 <span style="color:#c7cdda">탄탄</span> &nbsp;·&nbsp; 대표 <span style="color:#c7cdda">황희춘</span><br/>
+        사업자등록번호 <span style="color:#c7cdda">793-09-02836</span><br/>
+        부산광역시 수영구 과정로15번길 8-1, 1층 (망미동)<br/>
+        대표번호 <span style="color:#c7cdda">{{ phone }}</span>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:14px">
+        <a href="#" style="color:#c7cdda;font-size:13.5px;font-weight:600">이용약관</a>
+        <span style="color:#3a4459">|</span>
+        <a href="#" style="color:#c7cdda;font-size:13.5px;font-weight:600">개인정보처리방침</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">바로가기</div>
+      <div style="display:grid;gap:9px;font-size:13.5px">
+        <a href="#" style="color:#a8b2c7">회사소개</a>
+        <a href="#" style="color:#a8b2c7">상품 전체보기</a>
+        <a href="#" style="color:#a8b2c7">시공사례</a>
+        <a href="#" style="color:#a8b2c7">공지사항 · 자료실</a>
+        <a href="#" style="color:#a8b2c7">온라인 문의</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">무통장 입금 계좌</div>
+      <div style="background:#1c2436;border:1px solid #2a344a;border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.7">
+        <div style="color:#a8b2c7">입금 계좌 안내</div>
+        <div style="color:#fff;font-weight:800;font-size:16px;margin-top:4px;font-family:ui-monospace,monospace">○○은행 000-0000-0000</div>
+        <div style="color:#c7cdda;margin-top:2px">예금주 : 황희춘 (탄탄)</div>
+      </div>
+      <div style="font-size:12px;color:#6b7488;margin-top:12px;line-height:1.6">주문 전 계좌 정보를 관리자 페이지에서 등록·수정할 수 있습니다.</div>
+    </div>
+  </div>
+  <div style="border-top:1px solid #242d40">
+    <div style="max-width:1200px;margin:0 auto;padding:16px 24px;font-size:12.5px;color:#6b7488">© 2026 탄탄 편의시설. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- MOBILE MENU DRAWER -->
+<div style="position:fixed;inset:0;z-index:80;display:{{ drawerShow }}">
+  <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:rgba(10,15,25,.5)"></div>
+  <div style="position:absolute;top:0;left:0;bottom:0;width:300px;max-width:86%;background:#fff;overflow-y:auto;box-shadow:2px 0 24px rgba(0,0,0,.22);display:flex;flex-direction:column">
+    <div style="background:#1F3864;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:8px;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <a href="#" style="display:flex;align-items:center;gap:9px;padding:15px 20px;font-size:15px;font-weight:700;color:#1F3864;border-bottom:1px solid #eef0f3;background:#f7f9fc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>로그인 / 회원가입</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">상품 카테고리</div>
+    <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:12px 20px;font-size:15.5px;font-weight:800;color:#1F3864;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">전체 상품 보기</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">장애인편의시설</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">점자블럭</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">핸드레일</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">고객지원</div>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">시공사례</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">회사소개</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">공지사항</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">문의하기</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">자료실</a>
+    <div style="margin-top:auto;padding:18px 20px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:13px;border-radius:9px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE FIXED BOTTOM BAR -->
+<div class="tt-mobilebar" style="position:fixed;left:0;right:0;bottom:0;grid-template-columns:repeat(4,1fr);background:#fff;border-top:1px solid #e2e5ea;box-shadow:0 -2px 12px rgba(20,27,43,.08);z-index:50">
+  <a href="tel:{{ phone }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0;background:#F2B705">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>
+    <span style="font-size:11.5px;font-weight:800;color:#1F3864">전화하기</span>
+  </a>
+  <a href="#" onClick="{{ openDrawer }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    <span style="font-size:11.5px;font-weight:700;color:#1F3864">메뉴</span>
+  </a>
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+    <span style="font-size:11.5px;font-weight:700;color:#1F3864">내정보</span>
+  </a>
+  <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 0">
+    <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.2l2.1 11h10l2-8H6"/></svg>
+    <span style="font-size:11.5px;font-weight:700;color:#1F3864">장바구니</span>
+  </a>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:2400},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;010-4055-3338&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;연락처&quot;},&quot;heroAutoplay&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;동작&quot;}}">
+class Component extends DCLogic {
+  state = { slide: 0, openMenu: 'products', drawerOpen: false };
+
+  componentDidMount() {
+    if (this.props.heroAutoplay !== false) {
+      this._t = setInterval(() => {
+        this.setState(s => ({ slide: (s.slide + 1) % 3 }));
+      }, 5000);
+    }
+  }
+  componentWillUnmount() { if (this._t) clearInterval(this._t); }
+
+  renderVals() {
+    const phone = this.props.phone ?? '010-4055-3338';
+    const cur = this.state.slide;
+    const go = (i) => () => this.setState({ slide: i });
+    const dot = (i) => (i === cur ? '#F2B705' : 'rgba(255,255,255,.4)');
+
+    const nav = ['회사소개', '장애인편의시설', '점자블럭', '카스토퍼/주차안전', '핸드레일', '촉지판/안내판', '시공사례'];
+
+    const cats = [
+      { icon: '♿', name: '장애인편의시설' },
+      { icon: '⠿', name: '점자블럭' },
+      { icon: '🛑', name: '카스토퍼/주차안전' },
+      { icon: '🤚', name: '핸드레일' },
+      { icon: '🪧', name: '촉지판/안내판' },
+      { icon: '☎', name: '시공문의' },
+    ];
+
+    const won = (n) => n.toLocaleString('ko-KR') + '원';
+    const raw = [
+      { cat: '점자블럭', name: '자기질 점자블럭(논슬립) 15T 점형', price: 2800, shot: '제품 사진' },
+      { cat: '카스토퍼', name: '고무 카스토퍼 750', price: 7000, shot: '제품 사진', badge: 'BEST' },
+      { cat: '핸드레일', name: 'STS L자형 손잡이 600×600', price: 43000, shot: '제품 사진' },
+      { cat: '촉지판', name: '화장실 점자촉지판', price: 106000, shot: '제품 사진', phoneOnly: true },
+      { cat: '핸드레일', name: 'STS 안전손잡이 상향식 Ø32', price: 30000, shot: '제품 사진' },
+      { cat: '안내판', name: '스텐 종합안내촉지도', price: 0, shot: '제품 사진', phoneOnly: true },
+      { cat: '주차안전', name: '스테인리스 볼라드 Ø76', price: 88000, shot: '제품 사진', sold: true },
+      { cat: '점자블럭', name: '디자인블럭 300×300×60T (특수)', price: 5200, shot: '제품 사진', badge: 'NEW' },
+    ];
+    const products = raw.map(p => ({
+      cat: p.cat,
+      name: p.name,
+      shot: p.shot,
+      priceText: p.phoneOnly ? '전화문의' : won(p.price),
+      priceColor: p.phoneOnly ? '#8F6A00' : '#1a1d24',
+      badge: p.badge || '',
+      badgeShow: p.badge ? 'inline-block' : 'none',
+      badgeBg: p.badge === 'NEW' ? '#1F3864' : '#F2B705',
+      badgeColor: p.badge === 'NEW' ? '#fff' : '#1F3864',
+      soldShow: p.sold ? 'flex' : 'none',
+    }));
+
+    const cases = [
+      { title: '수영구 ○○빌딩 점자블럭 시공', date: '2026.06.18' },
+      { title: '△△아파트 계단 핸드레일 설치', date: '2026.05.30' },
+      { title: '연제구 공영주차장 카스토퍼 시공', date: '2026.05.11' },
+      { title: '○○ 공공화장실 안전손잡이 설치', date: '2026.04.22' },
+    ];
+
+    const notices = [
+      { tag: '공지', title: '여름 휴가철 배송 일정 안내 (7/28 ~ 8/1)', date: '2026.07.02' },
+      { tag: '신제품', title: '자기질 디자인블럭 신규 규격 입고 안내', date: '2026.06.20' },
+      { tag: '안내', title: '관공서 · 대량구매 세금계산서 견적 문의 안내', date: '2026.06.05' },
+    ];
+
+    return {
+      phone, nav, cats, products, cases, notices,
+      s0: cur === 0 ? 'block' : 'none',
+      s1: cur === 1 ? 'block' : 'none',
+      s2: cur === 2 ? 'block' : 'none',
+      d0: dot(0), d1: dot(1), d2: dot(2),
+      go0: go(0), go1: go(1), go2: go(2),
+      productsOpen: this.state.openMenu === 'products' ? 'block' : 'none',
+      supportOpen: this.state.openMenu === 'support' ? 'block' : 'none',
+      openProducts: () => this.setState({ openMenu: 'products' }),
+      openSupport: () => this.setState({ openMenu: 'support' }),
+      closeMenu: () => this.setState({ openMenu: null }),
+      drawerShow: this.state.drawerOpen ? 'block' : 'none',
+      openDrawer: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ drawerOpen: true }); },
+      closeDrawer: () => this.setState({ drawerOpen: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>

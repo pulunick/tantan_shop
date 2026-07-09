@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef1f5;font-family:'Pretendard',system-ui,sans-serif;color:#1a1d24;-webkit-font-smoothing:antialiased}
+  a{color:#1F3864;text-decoration:none}
+  input,select,textarea,button{font-family:inherit}
+  ::-webkit-scrollbar{height:9px;width:9px}
+  ::-webkit-scrollbar-thumb{background:#c9ced6;border-radius:8px}
+  @media(max-width:860px){
+    .tt-admin{flex-direction:column!important}
+    .tt-side{width:100%!important;height:auto!important;position:static!important}
+    .tt-sidenav{display:flex!important;overflow-x:auto;white-space:nowrap;padding:8px 10px!important}
+    .tt-sidenav > *{white-space:nowrap}
+    .tt-cards{grid-template-columns:repeat(2,1fr)!important}
+    .tt-table-scroll{overflow-x:auto}
+  }
+</style>
+</helmet>
+
+<div class="tt-admin" style="display:flex;min-height:100vh">
+
+  <!-- SIDEBAR -->
+  <aside class="tt-side" style="width:248px;flex:none;background:#141b2b;color:#c7cdda;position:sticky;top:0;height:100vh;display:flex;flex-direction:column">
+    <div style="padding:22px 22px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #242d40">
+      <span style="width:40px;height:40px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:6px;flex:none">
+        <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:13px">탄탄</span>
+      </span>
+      <div style="line-height:1.2">
+        <div style="color:#fff;font-size:16px;font-weight:900">탄탄 관리자</div>
+        <div style="color:#7f8aa3;font-size:11.5px;font-weight:600">ADMIN CONSOLE</div>
+      </div>
+    </div>
+    <nav class="tt-sidenav" style="padding:12px 12px;display:flex;flex-direction:column;gap:4px">
+      <button onClick="{{ goDashboard }}" style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;background:{{ navDashBg }};color:{{ navDashColor }}">대시보드</button>
+      <button onClick="{{ goProducts }}" style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;background:{{ navProdBg }};color:{{ navProdColor }}">상품 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">카테고리 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">주문 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">회원 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">게시판 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">사이트 관리</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <!-- TOP BAR -->
+    <div style="background:#fff;border-bottom:1px solid #e2e5ea;padding:16px 28px;display:flex;align-items:center;justify-content:space-between">
+      <h1 style="margin:0;font-size:22px;font-weight:900;letter-spacing:-.5px;white-space:nowrap">{{ pageTitle }}</h1>
+      <div style="display:flex;align-items:center;gap:14px">
+        <a href="탄탄편의시설-메인.dc.html" style="font-size:14px;font-weight:700;color:#6b7488">쇼핑몰 보기 ↗</a>
+        <div style="display:flex;align-items:center;gap:9px;padding:7px 12px 7px 7px;background:#f2f4f7;border-radius:30px">
+          <span style="width:32px;height:32px;border-radius:50%;background:#1F3864;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">황</span>
+          <span style="font-size:14.5px;font-weight:800;white-space:nowrap">황희춘 대표님</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:28px;flex:1">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div style="display:{{ dashShow }}">
+        <div class="tt-cards" style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px">
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:22px 24px">
+            <div style="font-size:15px;font-weight:700;color:#6b7488">신규 주문 <span style="font-size:12.5px;color:#98a0af">(오늘)</span></div>
+            <div style="margin-top:10px;font-size:38px;font-weight:900;color:#1F3864;letter-spacing:-1px">3건</div>
+            <div style="margin-top:6px;font-size:13.5px;color:#1b6b3a;font-weight:700">처리 대기 2건</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:22px 24px">
+            <div style="font-size:15px;font-weight:700;color:#6b7488">미답변 문의</div>
+            <div style="margin-top:10px;font-size:38px;font-weight:900;color:#8F6A00;letter-spacing:-1px">5건</div>
+            <div style="margin-top:6px;font-size:13.5px;color:#a3403a;font-weight:700">견적문의 2건 포함</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:22px 24px">
+            <div style="font-size:15px;font-weight:700;color:#6b7488">오늘 가입</div>
+            <div style="margin-top:10px;font-size:38px;font-weight:900;color:#1F3864;letter-spacing:-1px">1명</div>
+            <div style="margin-top:6px;font-size:13.5px;color:#6b7488;font-weight:700">누적 회원 128명</div>
+          </div>
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:22px 24px">
+            <div style="font-size:15px;font-weight:700;color:#6b7488">판매중 상품</div>
+            <div style="margin-top:10px;font-size:38px;font-weight:900;color:#1F3864;letter-spacing:-1px">42개</div>
+            <div style="margin-top:6px;font-size:13.5px;color:#a3403a;font-weight:700">품절 3개</div>
+          </div>
+        </div>
+
+        <div style="margin-top:24px;background:#fff;border:1px solid #e2e5ea;border-radius:14px;overflow:hidden">
+          <div style="padding:18px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef0f3">
+            <h2 style="margin:0;font-size:18px;font-weight:900;white-space:nowrap">최근 주문</h2>
+            <button onClick="{{ goProducts }}" style="border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:14px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer">주문 전체보기</button>
+          </div>
+          <div class="tt-table-scroll">
+          <table style="width:100%;border-collapse:collapse;min-width:640px">
+            <thead>
+              <tr style="background:#f7f8fa;text-align:left">
+                <th style="padding:13px 24px;font-size:14px;font-weight:800;color:#6b7488">주문번호</th>
+                <th style="padding:13px 16px;font-size:14px;font-weight:800;color:#6b7488">주문자</th>
+                <th style="padding:13px 16px;font-size:14px;font-weight:800;color:#6b7488">상품</th>
+                <th style="padding:13px 16px;font-size:14px;font-weight:800;color:#6b7488;text-align:right">금액</th>
+                <th style="padding:13px 16px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">상태</th>
+                <th style="padding:13px 24px;font-size:14px;font-weight:800;color:#6b7488;text-align:right">일시</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ recentOrders }}" as="o" hint-placeholder-count="5">
+                <tr style="border-top:1px solid #eef0f3">
+                  <td style="padding:15px 24px;font-size:14.5px;font-weight:800;color:#1F3864">{{ o.no }}</td>
+                  <td style="padding:15px 16px;font-size:14.5px;font-weight:600">{{ o.name }}</td>
+                  <td style="padding:15px 16px;font-size:14.5px;color:#3a4252">{{ o.item }}</td>
+                  <td style="padding:15px 16px;font-size:14.5px;font-weight:800;text-align:right">{{ o.amount }}</td>
+                  <td style="padding:15px 16px;text-align:center"><span style="font-size:13px;font-weight:800;color:{{ o.badgeColor }};background:{{ o.badgeBg }};padding:5px 12px;border-radius:20px;white-space:nowrap">{{ o.status }}</span></td>
+                  <td style="padding:15px 24px;font-size:13.5px;color:#6b7488;text-align:right;white-space:nowrap">{{ o.time }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCT LIST ===== -->
+      <div style="display:{{ productsShow }}">
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:18px 22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+          <select style="border:1px solid #d4d9e0;border-radius:9px;padding:12px 14px;font-size:15px;font-weight:600;background:#fff;cursor:pointer">
+            <option>전체 카테고리</option><option>점자블럭</option><option>카스토퍼</option><option>핸드레일</option><option>촉지판/안내판</option>
+          </select>
+          <select style="border:1px solid #d4d9e0;border-radius:9px;padding:12px 14px;font-size:15px;font-weight:600;background:#fff;cursor:pointer">
+            <option>판매상태 전체</option><option>판매중</option><option>품절</option>
+          </select>
+          <div style="display:flex;flex:1;min-width:220px;border:1px solid #d4d9e0;border-radius:9px;overflow:hidden">
+            <input placeholder="상품명 검색" style="flex:1;border:0;padding:12px 14px;font-size:15px;outline:none"/>
+            <button style="border:0;background:#1F3864;color:#fff;padding:0 20px;font-size:15px;font-weight:700;cursor:pointer">검색</button>
+          </div>
+          <button onClick="{{ goForm }}" style="border:0;background:#F2B705;color:#1F3864;font-size:16px;font-weight:900;padding:12px 22px;border-radius:9px;cursor:pointer">+ 상품 등록</button>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;overflow:hidden">
+          <div class="tt-table-scroll">
+          <table style="width:100%;border-collapse:collapse;min-width:820px">
+            <thead>
+              <tr style="background:#f7f8fa;text-align:left">
+                <th style="padding:14px 20px;font-size:14px;font-weight:800;color:#6b7488">상품</th>
+                <th style="padding:14px 16px;font-size:14px;font-weight:800;color:#6b7488">카테고리</th>
+                <th style="padding:14px 16px;font-size:14px;font-weight:800;color:#6b7488;text-align:right">가격</th>
+                <th style="padding:14px 16px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">판매상태</th>
+                <th style="padding:14px 16px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">노출</th>
+                <th style="padding:14px 20px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ products }}" as="p" hint-placeholder-count="6">
+                <tr style="border-top:1px solid #eef0f3">
+                  <td style="padding:14px 20px">
+                    <div style="display:flex;align-items:center;gap:14px">
+                      <div style="width:56px;height:56px;flex:none;border-radius:8px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 7px,#e5e8ee 7px,#e5e8ee 14px)"></div>
+                      <span style="font-size:15px;font-weight:700;color:#1a1d24">{{ p.name }}</span>
+                    </div>
+                  </td>
+                  <td style="padding:14px 16px;font-size:14.5px;color:#3a4252;font-weight:600">{{ p.cat }}</td>
+                  <td style="padding:14px 16px;font-size:15px;font-weight:800;text-align:right;color:{{ p.priceColor }};white-space:nowrap">{{ p.priceText }}</td>
+                  <td style="padding:14px 16px;text-align:center">
+                    <button onClick="{{ p.toggleSale }}" style="display:inline-flex;align-items:center;gap:10px;border:0;background:none;cursor:pointer">
+                      <span style="width:54px;height:30px;border-radius:20px;background:{{ p.saleTrackBg }};display:flex;align-items:center;justify-content:{{ p.saleJustify }};padding:3px;transition:.15s">
+                        <span style="width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)"></span>
+                      </span>
+                      <span style="font-size:14px;font-weight:800;width:44px;text-align:left;color:{{ p.saleLabelColor }}">{{ p.saleLabel }}</span>
+                    </button>
+                  </td>
+                  <td style="padding:14px 16px;text-align:center">
+                    <button onClick="{{ p.toggleVisible }}" style="border:1px solid {{ p.visBorder }};background:{{ p.visBg }};color:{{ p.visColor }};font-size:13.5px;font-weight:800;padding:7px 14px;border-radius:8px;cursor:pointer;white-space:nowrap">{{ p.visLabel }}</button>
+                  </td>
+                  <td style="padding:14px 20px;text-align:center">
+                    <button onClick="{{ goForm }}" style="border:1px solid #1F3864;background:#fff;color:#1F3864;font-size:14px;font-weight:800;padding:8px 16px;border-radius:8px;cursor:pointer">수정</button>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PRODUCT FORM ===== -->
+      <div style="display:{{ formShow }};max-width:900px">
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:30px 32px 34px">
+          <h2 style="margin:0 0 24px;font-size:22px;font-weight:900">상품 등록 / 수정</h2>
+
+          <div style="display:flex;flex-direction:column;gap:24px">
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">카테고리</label>
+              <select style="width:100%;border:1px solid #d4d9e0;border-radius:10px;padding:15px 16px;font-size:16px;font-weight:600;background:#fff;cursor:pointer">
+                <option>점자블럭 / 디자인블럭</option><option>장애인편의시설</option><option>카스토퍼 / 주차안전</option><option>핸드레일 / 손잡이</option><option>촉지판 / 안내판</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">상품명</label>
+              <input placeholder="예) 자기질 점자블럭(논슬립) 15T 점형" style="width:100%;border:1px solid #d4d9e0;border-radius:10px;padding:15px 16px;font-size:16px;outline:none"/>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">판매가</label>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input value="{{ priceValue }}" disabled="{{ phoneOnly }}" placeholder="숫자만 입력" style="flex:1;border:1px solid #d4d9e0;border-radius:10px;padding:15px 16px;font-size:16px;outline:none;background:{{ priceBg }};color:{{ priceColorForm }}"/>
+                <span style="font-size:16px;font-weight:700;color:#6b7488">원</span>
+              </div>
+              <label style="display:flex;align-items:center;gap:10px;margin-top:12px;font-size:15px;font-weight:700;cursor:pointer">
+                <input type="checkbox" checked="{{ phoneOnly }}" onChange="{{ togglePhoneOnly }}" style="width:20px;height:20px;accent-color:#1F3864;cursor:pointer"/>
+                가격 대신 '전화문의'로 표시 (온라인 결제 제외)
+              </label>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">옵션</label>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ options }}" as="op" hint-placeholder-count="2">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <input value="{{ op.name }}" placeholder="옵션명 (예: 점형)" style="flex:1;border:1px solid #d4d9e0;border-radius:10px;padding:13px 15px;font-size:15px;outline:none"/>
+                    <input value="{{ op.extra }}" placeholder="추가금액" style="width:150px;border:1px solid #d4d9e0;border-radius:10px;padding:13px 15px;font-size:15px;outline:none"/>
+                    <button onClick="{{ op.remove }}" style="width:46px;height:48px;flex:none;border:1px solid #e2c3c3;background:#fdf5f5;color:#c0392b;border-radius:10px;font-size:16px;font-weight:800;cursor:pointer">✕</button>
+                  </div>
+                </sc-for>
+              </div>
+              <button onClick="{{ addOption }}" style="margin-top:12px;border:1px dashed #b7c0cf;background:#f7f9fc;color:#1F3864;font-size:15px;font-weight:800;padding:13px 0;border-radius:10px;cursor:pointer;width:100%">+ 옵션 추가</button>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">상품 이미지</label>
+              <div style="border:2px dashed #b7c0cf;border-radius:12px;padding:28px;text-align:center;background:#fafbfc">
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+                <div style="font-size:16px;font-weight:800;color:#3a4252">여기로 사진을 끌어다 놓으세요</div>
+                <div style="font-size:14px;color:#6b7488;margin-top:4px">또는 클릭하여 파일 선택 · 여러 장 업로드 가능</div>
+              </div>
+              <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap">
+                <div style="position:relative;width:96px;height:96px;border-radius:10px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 8px,#e5e8ee 8px,#e5e8ee 16px);border:2px solid #1F3864">
+                  <span style="position:absolute;top:5px;left:5px;background:#1F3864;color:#fff;font-size:11px;font-weight:800;padding:3px 7px;border-radius:5px">대표</span>
+                </div>
+                <div style="width:96px;height:96px;border-radius:10px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 8px,#e5e8ee 8px,#e5e8ee 16px);border:1px solid #e2e5ea"></div>
+                <div style="width:96px;height:96px;border-radius:10px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 8px,#e5e8ee 8px,#e5e8ee 16px);border:1px solid #e2e5ea"></div>
+              </div>
+              <div style="font-size:13px;color:#6b7488;margin-top:8px">· 썸네일을 끌어 순서를 바꾸고, 클릭하여 대표 이미지를 지정하세요.</div>
+            </div>
+
+            <div>
+              <label style="display:block;font-size:16px;font-weight:800;margin-bottom:10px">상세설명</label>
+              <div style="border:1px solid #d4d9e0;border-radius:10px;overflow:hidden">
+                <div style="display:flex;gap:4px;padding:8px 10px;background:#f7f8fa;border-bottom:1px solid #e2e5ea">
+                  <button style="width:38px;height:36px;border:0;background:#fff;border-radius:7px;font-size:15px;font-weight:900;cursor:pointer">B</button>
+                  <button style="width:38px;height:36px;border:0;background:#fff;border-radius:7px;font-size:15px;font-style:italic;cursor:pointer">I</button>
+                  <button style="width:38px;height:36px;border:0;background:#fff;border-radius:7px;font-size:15px;text-decoration:underline;cursor:pointer">U</button>
+                  <button style="height:36px;padding:0 12px;border:0;background:#fff;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer">목록</button>
+                  <button style="height:36px;padding:0 12px;border:0;background:#fff;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer">이미지</button>
+                </div>
+                <textarea rows="6" placeholder="제품 사양, 규격, 시공 안내 등을 입력하세요." style="width:100%;border:0;padding:15px 16px;font-size:15px;outline:none;resize:vertical"></textarea>
+              </div>
+            </div>
+
+            <div style="display:flex;gap:14px;padding-top:8px">
+              <button onClick="{{ goProducts }}" style="flex:1;border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:17px;font-weight:800;padding:17px 0;border-radius:11px;cursor:pointer">취소</button>
+              <button style="flex:2;border:0;background:#1F3864;color:#fff;font-size:17px;font-weight:900;padding:17px 0;border-radius:11px;cursor:pointer">저장하기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    view: 'dashboard',
+    products: [
+      { id: 1, name: '자기질 점자블럭(논슬립) 15T', cat: '점자블럭', price: 2800, phone: false, sale: true, visible: true },
+      { id: 2, name: '고무 카스토퍼 750 (반사지)', cat: '카스토퍼', price: 7000, phone: false, sale: true, visible: true },
+      { id: 3, name: 'STS L자형 안전손잡이 600×600', cat: '핸드레일', price: 43000, phone: false, sale: true, visible: true },
+      { id: 4, name: '스테인리스 볼라드 Ø76', cat: '주차안전', price: 88000, phone: false, sale: false, visible: true },
+      { id: 5, name: '스텐 종합안내촉지도', cat: '안내판', price: 0, phone: true, sale: true, visible: false },
+      { id: 6, name: '화장실 점자촉지판', cat: '촉지판', price: 106000, phone: false, sale: true, visible: true },
+    ],
+    phoneOnly: false,
+    options: [{ name: '점형', extra: '0' }, { name: '선형', extra: '0' }],
+  };
+
+  renderVals() {
+    const won = (n) => n.toLocaleString('ko-KR') + '원';
+    const v = this.state.view;
+    const titles = { dashboard: '대시보드', products: '상품 관리', form: '상품 등록 / 수정' };
+
+    const setP = (fn) => this.setState(s => ({ products: s.products.map(fn) }));
+
+    const products = this.state.products.map(p => ({
+      name: p.name, cat: p.cat,
+      priceText: p.phone ? '전화문의' : won(p.price),
+      priceColor: p.phone ? '#8F6A00' : '#1a1d24',
+      saleTrackBg: p.sale ? '#1F3864' : '#c7ccd4',
+      saleJustify: p.sale ? 'flex-end' : 'flex-start',
+      saleLabel: p.sale ? '판매중' : '품절',
+      saleLabelColor: p.sale ? '#1F3864' : '#a3403a',
+      visBg: p.visible ? '#eef2f8' : '#f2f4f7',
+      visBorder: p.visible ? '#c3d0e6' : '#dfe3e9',
+      visColor: p.visible ? '#1F3864' : '#8a94a6',
+      visLabel: p.visible ? '노출' : '숨김',
+      toggleSale: () => setP(x => x.id === p.id ? { ...x, sale: !x.sale } : x),
+      toggleVisible: () => setP(x => x.id === p.id ? { ...x, visible: !x.visible } : x),
+    }));
+
+    const badge = (s) => ({
+      '결제완료': { bg: '#eef2f8', color: '#1F3864' },
+      '배송준비': { bg: '#fbf1d8', color: '#8F6A00' },
+      '배송중': { bg: '#dde8ff', color: '#234f9e' },
+      '배송완료': { bg: '#e2f1e8', color: '#1b6b3a' },
+    }[s]);
+    const recentOrders = [
+      { no: '20260707-0002', name: '김O호', item: '점자블럭 외 2건', amount: '170,000원', status: '결제완료', time: '오늘 10:24' },
+      { no: '20260707-0001', name: '박O수', item: '고무 카스토퍼 750', amount: '28,000원', status: '배송준비', time: '오늘 09:05' },
+      { no: '20260706-0008', name: '이O정', item: 'STS 안전손잡이 외 1건', amount: '73,000원', status: '배송중', time: '어제 17:41' },
+      { no: '20260706-0004', name: '수영구청', item: '점자블럭 대량', amount: '640,000원', status: '배송중', time: '어제 14:12' },
+      { no: '20260705-0011', name: '최O아', item: '화장실 점자촉지판', amount: '106,000원', status: '배송완료', time: '07.05 11:30' },
+    ].map(o => { const b = badge(o.status); return { ...o, badgeBg: b.bg, badgeColor: b.color }; });
+
+    const opts = this.state.options.map((op, i) => ({
+      name: op.name, extra: op.extra,
+      remove: () => this.setState(s => ({ options: s.options.filter((_, j) => j !== i) })),
+    }));
+
+    const nav = (k) => ({ bg: v === k ? '#F2B705' : 'transparent', color: v === k ? '#1F3864' : '#c7cdda' });
+    const nd = nav('dashboard');
+    const npActive = v === 'products' || v === 'form';
+    const np = { bg: npActive ? '#F2B705' : 'transparent', color: npActive ? '#1F3864' : '#c7cdda' };
+
+    return {
+      pageTitle: titles[v],
+      dashShow: v === 'dashboard' ? 'block' : 'none',
+      productsShow: v === 'products' ? 'block' : 'none',
+      formShow: v === 'form' ? 'block' : 'none',
+      goDashboard: () => this.setState({ view: 'dashboard' }),
+      goProducts: () => this.setState({ view: 'products' }),
+      goForm: () => this.setState({ view: 'form' }),
+      navDashBg: nd.bg, navDashColor: nd.color,
+      navProdBg: np.bg, navProdColor: np.color,
+
+      products, recentOrders, options: opts,
+
+      phoneOnly: this.state.phoneOnly,
+      togglePhoneOnly: () => this.setState(s => ({ phoneOnly: !s.phoneOnly })),
+      priceValue: this.state.phoneOnly ? '' : '2800',
+      priceBg: this.state.phoneOnly ? '#f2f4f7' : '#fff',
+      priceColorForm: this.state.phoneOnly ? '#a6adb8' : '#1a1d24',
+      addOption: () => this.setState(s => ({ options: [...s.options, { name: '', extra: '0' }] })),
+    };
+  }
+}
+</script>
+</body>
+</html>

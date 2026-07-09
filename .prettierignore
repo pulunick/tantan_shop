@@ -1,0 +1,16 @@
+# Package Managers
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+bun.lock
+bun.lockb
+
+# Miscellaneous
+/static/
+
+# Imported design handoff artifacts (reference only, not source)
+docs/design/*.dc.html
+docs/design/support.js
+
+# Supabase CLI generated
+/supabase/.temp/

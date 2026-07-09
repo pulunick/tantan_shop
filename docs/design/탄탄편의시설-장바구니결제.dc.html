@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#F7F8FA;font-family:'Pretendard',system-ui,sans-serif;color:#1a1d24;-webkit-font-smoothing:antialiased}
+  a{color:#1F3864;text-decoration:none}
+  a:hover{color:#8F6A00}
+  ::-webkit-scrollbar{height:8px;width:8px}
+  ::-webkit-scrollbar-thumb{background:#c9ced6;border-radius:8px}
+  input,select,textarea{font-family:inherit}
+  .tt-mobile-search,.tt-mobile-menu{display:none}
+  @media(max-width:1080px){ .tt-cols{grid-template-columns:1fr!important} }
+  @media(max-width:820px){
+    .tt-desk-util{display:none!important}
+    .tt-search{display:none!important}
+    .tt-mobile-search{display:flex!important}
+    .tt-mobile-menu{display:flex!important}
+    .tt-gnb{display:none!important}
+    .tt-cartrow{grid-template-columns:auto 64px 1fr!important;row-gap:12px!important}
+    .tt-cartrow .tt-cellqty,.tt-cartrow .tt-cellprice{grid-column:2 / -1!important;justify-self:start!important}
+  }
+</style>
+</helmet>
+
+<div style="width:100%;background:#fff;border-bottom:1px solid #eceef2">
+  <div class="tt-desk-util" style="background:#141b2b;color:#c7cdda">
+    <div style="max-width:1200px;margin:0 auto;padding:7px 24px;display:flex;justify-content:space-between;align-items:center;font-size:13px">
+      <span style="color:#9aa4ba">부산 장애인편의시설 · 안전용품 전문 &nbsp;|&nbsp; 제품 판매 및 시공</span>
+      <div style="display:flex;gap:18px;align-items:center">
+        <a href="#" style="color:#c7cdda">로그인</a>
+        <a href="#" style="color:#c7cdda">회원가입</a>
+        <a href="#" style="color:#c7cdda">주문조회</a>
+        <a href="#" style="color:#c7cdda">고객센터</a>
+      </div>
+    </div>
+  </div>
+  <header style="max-width:1200px;margin:0 auto;padding:20px 24px;display:flex;align-items:center;gap:28px">
+    <a href="탄탄편의시설-메인.dc.html" style="display:flex;align-items:center;gap:12px;flex:none">
+      <span style="width:46px;height:46px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:6px">
+        <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:15px;letter-spacing:-1px">탄탄</span>
+      </span>
+      <span style="display:flex;flex-direction:column;line-height:1.15">
+        <span style="font-size:22px;font-weight:900;color:#1F3864;letter-spacing:-1px">탄탄 편의시설</span>
+        <span style="font-size:11px;color:#6b7488;font-weight:600;letter-spacing:.4px">TANTAN CONVENIENCE FACILITIES</span>
+      </span>
+    </a>
+    <div class="tt-search" style="flex:1;max-width:520px;margin:0 auto">
+      <div style="display:flex;border:2px solid #1F3864;border-radius:9px;overflow:hidden">
+        <input placeholder="점자블럭, 카스토퍼, 안전손잡이 검색" style="flex:1;border:0;padding:12px 16px;font-size:15px;outline:none"/>
+        <button style="border:0;background:#1F3864;color:#fff;padding:0 22px;font-size:15px;font-weight:700;cursor:pointer">검색</button>
+      </div>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:16px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;gap:10px;background:#F2B705;color:#1F3864;padding:9px 16px;border-radius:9px;font-weight:800">
+        <span style="width:30px;height:30px;border-radius:50%;background:#1F3864;color:#fff;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg></span>
+        <span style="display:flex;flex-direction:column;line-height:1.15">
+          <span style="font-size:10.5px;font-weight:700;opacity:.75">대표번호 · 시공문의</span>
+          <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">{{ phone }}</span>
+        </span>
+      </a>
+      <a href="#" class="tt-mobile-search" title="검색" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l4.5 4.5"/></svg></a>
+      <a href="#" class="tt-mobile-menu" onClick="{{ openDrawer }}" title="메뉴" style="width:42px;height:42px;border:1px solid #e2e5ea;border-radius:9px;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></a>
+      <a href="#" title="장바구니" style="width:42px;height:42px;border:1px solid #1F3864;border-radius:9px;display:flex;align-items:center;justify-content:center"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="17" cy="20" r="1.4"/><path d="M3 4h2.2l2.1 11h10l2-8H6"/></svg></a>
+    </div>
+  </header>
+  <nav class="tt-gnb" style="background:#1F3864">
+    <div style="max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center">
+        <div onMouseEnter="{{ openProducts }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="탄탄편의시설-상품리스트.dc.html" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">상품 ▾</a>
+          <div style="display:{{ productsOpen }};position:absolute;top:100%;left:0;min-width:238px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:11px 20px;font-size:15px;font-weight:800;color:#1F3864" style-hover="background:#eef2f8">전체 상품 보기</a>
+            <div style="height:1px;background:#eef0f3;margin:5px 0"></div>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">장애인편의시설</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">점자블럭</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">핸드레일</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+          </div>
+        </div>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">시공사례</a>
+        <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">회사소개</a>
+        <div onMouseEnter="{{ openSupport }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+          <a href="#" style="color:#fff;font-weight:700;font-size:16px;padding:15px 22px;display:inline-block;letter-spacing:-.3px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12)">고객센터 ▾</a>
+          <div style="display:{{ supportOpen }};position:absolute;top:100%;left:0;min-width:182px;background:#fff;border:1px solid #e6e9ee;border-top:0;border-radius:0 0 10px 10px;box-shadow:0 12px 26px rgba(20,27,43,.16);z-index:60;padding:6px 0">
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">공지사항</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">문의하기</a>
+            <a href="#" style="display:block;padding:11px 20px;font-size:15px;font-weight:600;color:#3a4252" style-hover="background:#eef2f8">자료실</a>
+          </div>
+        </div>
+      </div>
+      <a href="#" style="display:inline-flex;align-items:center;gap:7px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:10px 18px;border-radius:8px;white-space:nowrap" style-hover="background:#ffc933"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </nav>
+</div>
+
+<!-- STEP INDICATOR -->
+<div style="max-width:900px;margin:32px auto 0;padding:0 24px;display:flex;align-items:center;justify-content:center;gap:0">
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="width:32px;height:32px;border-radius:50%;background:{{ stepCartBg }};color:{{ stepCartColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">1</span>
+    <span style="font-size:16px;font-weight:800;color:{{ stepCartColor2 }}">장바구니</span>
+  </div>
+  <div style="width:56px;height:2px;background:#d4d9e0;margin:0 16px"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="width:32px;height:32px;border-radius:50%;background:{{ stepPayBg }};color:{{ stepPayColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">2</span>
+    <span style="font-size:16px;font-weight:800;color:{{ stepPayColor2 }}">주문 / 결제</span>
+  </div>
+  <div style="width:56px;height:2px;background:#d4d9e0;margin:0 16px"></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="width:32px;height:32px;border-radius:50%;background:#eef2f8;color:#9aa4ba;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px">3</span>
+    <span style="font-size:16px;font-weight:800;color:#9aa4ba">주문완료</span>
+  </div>
+</div>
+
+<!-- ============ CART VIEW ============ -->
+<div style="display:{{ cartShow }};max-width:1200px;margin:26px auto 0;padding:0 24px">
+  <h1 style="margin:0 0 20px;font-size:26px;font-weight:900;letter-spacing:-1px">장바구니</h1>
+  <div class="tt-cols" style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start">
+    <div>
+      <!-- table head -->
+      <div style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #e6e9ee;border-radius:12px 12px 0 0;padding:14px 20px;border-bottom:0">
+        <label style="display:flex;align-items:center;gap:9px;font-size:15px;font-weight:700;cursor:pointer">
+          <input type="checkbox" checked="{{ allChecked }}" onChange="{{ toggleAll }}" style="width:19px;height:19px;accent-color:#1F3864;cursor:pointer"/>
+          전체선택 <span style="color:#6b7488;font-weight:600">({{ selectedCount }}/{{ itemCount }})</span>
+        </label>
+        <button onClick="{{ removeSelected }}" style="border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:13.5px;font-weight:700;padding:8px 14px;border-radius:8px;cursor:pointer">선택삭제</button>
+      </div>
+      <!-- rows -->
+      <div style="background:#fff;border:1px solid #e6e9ee;border-radius:0 0 12px 12px;overflow:hidden">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+          <div class="tt-cartrow" style="display:grid;grid-template-columns:auto 84px 1fr 132px 120px 36px;align-items:center;gap:16px;padding:18px 20px;border-top:1px solid #eef0f3;opacity:{{ r.opacity }}">
+            <input type="checkbox" checked="{{ r.checked }}" disabled="{{ r.sold }}" onChange="{{ r.toggle }}" style="width:19px;height:19px;accent-color:#1F3864;cursor:pointer"/>
+            <div style="position:relative;width:84px;height:84px;border-radius:9px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 9px,#e5e8ee 9px,#e5e8ee 18px);display:flex;align-items:center;justify-content:center">
+              <span style="font-family:ui-monospace,monospace;font-size:9.5px;color:#6b7488">사진</span>
+              <span style="position:absolute;inset:0;background:rgba(20,27,43,.45);border-radius:9px;display:{{ r.soldOverlay }};align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px">품절</span>
+            </div>
+            <div>
+              <div style="font-size:15.5px;font-weight:700;line-height:1.4;color:#1a1d24">{{ r.name }}</div>
+              <div style="margin-top:6px;font-size:13.5px;color:#6b7488;font-weight:600">옵션 : {{ r.option }}</div>
+              <span style="display:{{ r.soldTagShow }};margin-top:7px;font-size:12px;font-weight:800;color:#a3403a;background:#fbf1f1;padding:3px 8px;border-radius:5px">일시 품절</span>
+            </div>
+            <div class="tt-cellqty" style="display:flex;align-items:center;border:1px solid #d4d9e0;border-radius:8px;overflow:hidden;width:fit-content">
+              <button onClick="{{ r.dec }}" style="width:36px;height:38px;border:0;background:#f7f8fa;font-size:18px;font-weight:700;color:#1F3864;cursor:pointer">−</button>
+              <span style="width:44px;text-align:center;font-size:15px;font-weight:800">{{ r.qty }}</span>
+              <button onClick="{{ r.inc }}" style="width:36px;height:38px;border:0;background:#f7f8fa;font-size:18px;font-weight:700;color:#1F3864;cursor:pointer">+</button>
+            </div>
+            <div class="tt-cellprice" style="text-align:right;font-size:17px;font-weight:900;color:#1a1d24;letter-spacing:-.5px">{{ r.lineText }}</div>
+            <button onClick="{{ r.del }}" title="삭제" style="width:32px;height:32px;border:1px solid #e2e5ea;background:#fff;border-radius:8px;color:#8a92a3;font-size:15px;cursor:pointer">✕</button>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top:14px;font-size:13.5px;color:#6b7488;line-height:1.6">· 대량·중량 상품(블럭 등)은 화물 배송으로 진행되며 배송비는 착불입니다.<br/>· 세금계산서 발행 및 관공서 견적이 필요하시면 주문 시 요청사항에 남겨 주세요.</div>
+    </div>
+
+    <!-- summary -->
+    <div style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 22px 24px;position:sticky;top:20px">
+      <h3 style="margin:0 0 18px;font-size:18px;font-weight:900">결제 예정 금액</h3>
+      <div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:12px"><span style="color:#6b7488;font-weight:600">상품금액</span><span style="font-weight:800">{{ goodsText }}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:14px"><span style="color:#6b7488;font-weight:600">배송비</span><span style="font-weight:800;color:#1F3864">착불</span></div>
+      <div style="font-size:12.5px;color:#8a92a3;background:#f7f8fa;border-radius:8px;padding:10px 12px;line-height:1.55;margin-bottom:16px">배송비는 수령 시 착불로 결제되며, 지역·수량에 따라 화물 배송으로 안내될 수 있습니다.</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:16px;border-top:2px solid #eef0f3">
+        <span style="font-size:16px;font-weight:800">총 결제금액</span>
+        <span style="font-size:26px;font-weight:900;color:#1F3864;letter-spacing:-.5px">{{ goodsText }}</span>
+      </div>
+      <button onClick="{{ goCheckout }}" style="width:100%;margin-top:20px;border:0;background:#1F3864;color:#fff;font-size:17px;font-weight:800;padding:16px 0;border-radius:10px;cursor:pointer">주문하기</button>
+      <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;text-align:center;margin-top:12px;font-size:14px;font-weight:700;color:#6b7488">← 쇼핑 계속하기</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ CHECKOUT VIEW ============ -->
+<div style="display:{{ checkoutShow }};max-width:1200px;margin:26px auto 0;padding:0 24px">
+  <h1 style="margin:0 0 20px;font-size:26px;font-weight:900;letter-spacing:-1px">주문 / 결제</h1>
+  <div class="tt-cols" style="display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:18px">
+
+      <!-- order items -->
+      <section style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 24px">
+        <h3 style="margin:0 0 16px;font-size:18px;font-weight:900">주문 상품 <span style="color:#6b7488;font-size:15px;font-weight:700">{{ orderCount }}건</span></h3>
+        <sc-for list="{{ orderItems }}" as="o" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #eef0f3">
+            <div style="width:60px;height:60px;flex:none;border-radius:8px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 8px,#e5e8ee 8px,#e5e8ee 16px)"></div>
+            <div style="flex:1">
+              <div style="font-size:15px;font-weight:700;line-height:1.4">{{ o.name }}</div>
+              <div style="margin-top:4px;font-size:13px;color:#6b7488;font-weight:600">옵션 : {{ o.option }} / 수량 {{ o.qty }}개</div>
+            </div>
+            <div style="font-size:16px;font-weight:900;letter-spacing:-.5px">{{ o.lineText }}</div>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- shipping form -->
+      <section style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 24px">
+        <h3 style="margin:0 0 18px;font-size:18px;font-weight:900">배송지 정보</h3>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div>
+              <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">받는 분</label>
+              <input placeholder="이름" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+            </div>
+            <div>
+              <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">연락처</label>
+              <input placeholder="010-0000-0000" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+            </div>
+          </div>
+          <div>
+            <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">주소</label>
+            <div style="display:flex;gap:10px;margin-bottom:10px">
+              <input placeholder="우편번호" style="width:140px;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+              <button style="border:1px solid #1F3864;background:#fff;color:#1F3864;font-size:14.5px;font-weight:800;padding:0 18px;border-radius:9px;cursor:pointer;white-space:nowrap">우편번호 검색</button>
+            </div>
+            <input placeholder="기본주소" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none;margin-bottom:10px"/>
+            <input placeholder="상세주소를 입력하세요" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+          </div>
+          <div>
+            <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">배송 요청사항</label>
+            <textarea rows="2" placeholder="예) 세금계산서 발행 요청 / 현장 하차 위치 안내 등" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none;resize:vertical"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- payment method -->
+      <section style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 24px">
+        <h3 style="margin:0 0 16px;font-size:18px;font-weight:900">결제수단</h3>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <label onClick="{{ payCard }}" style="display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid {{ payCardBorder }};background:{{ payCardBg }};border-radius:10px;padding:15px 0;font-size:15px;font-weight:800;color:#1a1d24;cursor:pointer">신용카드</label>
+          <label onClick="{{ payTransfer }}" style="display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid {{ payTransferBorder }};background:{{ payTransferBg }};border-radius:10px;padding:15px 0;font-size:15px;font-weight:800;color:#1a1d24;cursor:pointer">계좌이체</label>
+          <label onClick="{{ payDeposit }}" style="display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid {{ payDepositBorder }};background:{{ payDepositBg }};border-radius:10px;padding:15px 0;font-size:15px;font-weight:800;color:#1a1d24;cursor:pointer">무통장입금</label>
+        </div>
+        <div style="display:{{ depositShow }};margin-top:16px;background:#f7f8fa;border-radius:10px;padding:16px 18px">
+          <div style="font-size:14px;font-weight:800;color:#1F3864;margin-bottom:10px">입금 계좌 : ○○은행 000-0000-0000 (예금주 황희춘)</div>
+          <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">입금자명</label>
+          <input placeholder="입금하실 분의 성함" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+        </div>
+      </section>
+
+      <!-- agreements -->
+      <section style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 24px">
+        <label style="display:flex;align-items:center;gap:10px;font-size:16px;font-weight:800;cursor:pointer;padding-bottom:14px;border-bottom:1px solid #eef0f3">
+          <input type="checkbox" checked="{{ agreeAll }}" onChange="{{ toggleAgreeAll }}" style="width:20px;height:20px;accent-color:#1F3864;cursor:pointer"/>
+          전체 동의
+        </label>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:14px">
+          <label style="display:flex;align-items:center;gap:10px;font-size:14.5px;color:#3a4252;font-weight:600;cursor:pointer">
+            <input type="checkbox" checked="{{ agree1 }}" onChange="{{ toggle1 }}" style="width:18px;height:18px;accent-color:#1F3864;cursor:pointer"/>
+            (필수) 구매조건 확인 및 결제진행 동의
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;font-size:14.5px;color:#3a4252;font-weight:600;cursor:pointer">
+            <input type="checkbox" checked="{{ agree2 }}" onChange="{{ toggle2 }}" style="width:18px;height:18px;accent-color:#1F3864;cursor:pointer"/>
+            (필수) 개인정보 수집 및 이용 동의
+          </label>
+          <label style="display:flex;align-items:center;gap:10px;font-size:14.5px;color:#3a4252;font-weight:600;cursor:pointer">
+            <input type="checkbox" checked="{{ agree3 }}" onChange="{{ toggle3 }}" style="width:18px;height:18px;accent-color:#1F3864;cursor:pointer"/>
+            (선택) 개인정보 제3자 제공 동의 (배송)
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <!-- payment summary -->
+    <div style="background:#fff;border:1px solid #e6e9ee;border-radius:12px;padding:22px 22px 24px;position:sticky;top:20px">
+      <h3 style="margin:0 0 18px;font-size:18px;font-weight:900">결제 정보</h3>
+      <div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:12px"><span style="color:#6b7488;font-weight:600">상품금액</span><span style="font-weight:800">{{ goodsText }}</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:15px;margin-bottom:14px"><span style="color:#6b7488;font-weight:600">배송비</span><span style="font-weight:800;color:#1F3864">착불</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:16px;border-top:2px solid #eef0f3">
+        <span style="font-size:16px;font-weight:800">총 결제금액</span>
+        <span style="font-size:26px;font-weight:900;color:#1F3864;letter-spacing:-.5px">{{ goodsText }}</span>
+      </div>
+      <button style="width:100%;margin-top:20px;border:0;background:#F2B705;color:#1F3864;font-size:17px;font-weight:900;padding:16px 0;border-radius:10px;cursor:pointer">{{ goodsText }} 결제하기</button>
+      <button onClick="{{ goCart }}" style="width:100%;margin-top:12px;border:1px solid #d4d9e0;background:#fff;color:#6b7488;font-size:14px;font-weight:700;padding:12px 0;border-radius:9px;cursor:pointer">← 장바구니로</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="margin-top:60px;background:#141b2b;color:#a8b2c7">
+  <div style="max-width:1200px;margin:0 auto;padding:44px 24px 40px;display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px">
+    <div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:16px">
+        <span style="width:38px;height:38px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:5px">
+          <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:12px">탄탄</span>
+        </span>
+        <span style="color:#fff;font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      </div>
+      <div style="font-size:13.5px;line-height:2;color:#a8b2c7">
+        상호 <span style="color:#dfe4ee">탄탄</span> &nbsp;·&nbsp; 대표 <span style="color:#dfe4ee">황희춘</span><br/>
+        사업자등록번호 <span style="color:#dfe4ee">793-09-02836</span><br/>
+        부산광역시 수영구 과정로15번길 8-1, 1층 (망미동)<br/>
+        대표번호 <span style="color:#dfe4ee">{{ phone }}</span>
+      </div>
+      <div style="margin-top:16px;display:flex;gap:14px">
+        <a href="#" style="color:#dfe4ee;font-size:13.5px;font-weight:600">이용약관</a>
+        <span style="color:#3a4459">|</span>
+        <a href="#" style="color:#dfe4ee;font-size:13.5px;font-weight:600">개인정보처리방침</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">바로가기</div>
+      <div style="display:grid;gap:9px;font-size:13.5px">
+        <a href="#" style="color:#a8b2c7">회사소개</a>
+        <a href="탄탄편의시설-상품리스트.dc.html" style="color:#a8b2c7">상품 전체보기</a>
+        <a href="#" style="color:#a8b2c7">시공사례</a>
+        <a href="#" style="color:#a8b2c7">공지사항 · 자료실</a>
+        <a href="#" style="color:#a8b2c7">온라인 문의</a>
+      </div>
+    </div>
+    <div>
+      <div style="color:#fff;font-size:14px;font-weight:800;margin-bottom:14px">무통장 입금 계좌</div>
+      <div style="background:#1c2436;border:1px solid #2a344a;border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.7">
+        <div style="color:#a8b2c7">입금 계좌 안내</div>
+        <div style="color:#fff;font-weight:800;font-size:16px;margin-top:4px;font-family:ui-monospace,monospace">○○은행 000-0000-0000</div>
+        <div style="color:#dfe4ee;margin-top:2px">예금주 : 황희춘 (탄탄)</div>
+      </div>
+    </div>
+  </div>
+  <div style="border-top:1px solid #242d40">
+    <div style="max-width:1200px;margin:0 auto;padding:16px 24px;font-size:12.5px;color:#8a94aa">© 2026 탄탄 편의시설. All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- MOBILE MENU DRAWER -->
+<div style="position:fixed;inset:0;z-index:80;display:{{ drawerShow }}">
+  <div onClick="{{ closeDrawer }}" style="position:absolute;inset:0;background:rgba(10,15,25,.5)"></div>
+  <div style="position:absolute;top:0;left:0;bottom:0;width:300px;max-width:86%;background:#fff;overflow-y:auto;box-shadow:2px 0 24px rgba(0,0,0,.22);display:flex;flex-direction:column">
+    <div style="background:#1F3864;color:#fff;padding:18px 20px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:18px;font-weight:900;letter-spacing:-.5px">탄탄 편의시설</span>
+      <button onClick="{{ closeDrawer }}" style="width:34px;height:34px;border:0;background:rgba(255,255,255,.16);color:#fff;border-radius:8px;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <a href="#" style="display:flex;align-items:center;gap:9px;padding:15px 20px;font-size:15px;font-weight:700;color:#1F3864;border-bottom:1px solid #eef0f3;background:#f7f9fc"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>로그인 / 회원가입</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">상품 카테고리</div>
+    <a href="탄탄편의시설-상품리스트.dc.html" style="display:block;padding:12px 20px;font-size:15.5px;font-weight:800;color:#1F3864;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">전체 상품 보기</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">장애인편의시설</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">점자블럭</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">카스토퍼 · 주차안전</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">핸드레일</a>
+    <a href="#" style="display:block;padding:12px 20px 12px 28px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">촉지판 · 안내판</a>
+    <div style="padding:16px 20px 6px;font-size:12.5px;font-weight:800;color:#6b7488;letter-spacing:.3px">고객지원</div>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">시공사례</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">회사소개</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">공지사항</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">문의하기</a>
+    <a href="#" style="display:block;padding:12px 20px;font-size:15px;font-weight:600;color:#3a4252;border-bottom:1px solid #f2f4f7" style-hover="background:#eef2f8">자료실</a>
+    <div style="margin-top:auto;padding:18px 20px">
+      <a href="tel:{{ phone }}" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#F2B705;color:#1F3864;font-weight:800;font-size:15px;padding:13px;border-radius:9px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"/></svg>시공·견적 문의</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:1400},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;010-4055-3338&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;연락처&quot;}}">
+class Component extends DCLogic {
+  state = {
+    step: 'cart',
+    items: [
+      { id: 1, name: '자기질 점자블럭(논슬립) 15T', option: '점형', price: 2800, qty: 20, checked: true, sold: false },
+      { id: 2, name: '고무 카스토퍼 750 (반사지 부착)', option: '기본', price: 7000, qty: 4, checked: true, sold: false },
+      { id: 3, name: 'STS L자형 안전손잡이 600×600', option: '좌수(L)', price: 43000, qty: 2, checked: true, sold: false },
+      { id: 4, name: '스테인리스 볼라드 Ø76', option: '고정식', price: 88000, qty: 1, checked: false, sold: true },
+    ],
+    pay: 'card',
+    agree: { t1: false, t2: false, t3: false },
+    openMenu: null, drawerOpen: false,
+  };
+
+  renderVals() {
+    const phone = this.props.phone ?? '010-4055-3338';
+    const won = (n) => n.toLocaleString('ko-KR') + '원';
+    const items = this.state.items;
+
+    const setItems = (fn) => this.setState(s => ({ items: s.items.map(fn) }));
+
+    const rows = items.map(it => ({
+      id: it.id, name: it.name, option: it.option, qty: it.qty,
+      lineText: won(it.price * it.qty),
+      checked: it.checked, sold: it.sold,
+      opacity: it.sold ? '.55' : '1',
+      soldTagShow: it.sold ? 'inline-block' : 'none',
+      soldOverlay: it.sold ? 'flex' : 'none',
+      toggle: () => setItems(x => x.id === it.id ? { ...x, checked: !x.checked } : x),
+      inc: () => setItems(x => x.id === it.id && !x.sold ? { ...x, qty: x.qty + 1 } : x),
+      dec: () => setItems(x => x.id === it.id && !x.sold ? { ...x, qty: Math.max(1, x.qty - 1) } : x),
+      del: () => this.setState(s => ({ items: s.items.filter(x => x.id !== it.id) })),
+    }));
+
+    const selectable = items.filter(i => !i.sold);
+    const selected = selectable.filter(i => i.checked);
+    const goods = selected.reduce((a, b) => a + b.price * b.qty, 0);
+
+    const orderItems = selected.map(o => ({
+      name: o.name, option: o.option, qty: o.qty, lineText: won(o.price * o.qty),
+    }));
+
+    const pay = this.state.pay;
+    const pv = (k) => ({ border: pay === k ? '#1F3864' : '#d4d9e0', bg: pay === k ? '#eef2f8' : '#fff' });
+    const c = pv('card'), t = pv('transfer'), d = pv('deposit');
+
+    const ag = this.state.agree;
+    const allAg = ag.t1 && ag.t2 && ag.t3;
+    const toggleAg = (k) => this.setState(s => ({ agree: { ...s.agree, [k]: !s.agree[k] } }));
+
+    const step = this.state.step;
+    const active = '#1F3864', done = '#1F3864', off = '#eef2f8';
+
+    return {
+      phone,
+      cartShow: step === 'cart' ? 'block' : 'none',
+      checkoutShow: step === 'checkout' ? 'block' : 'none',
+      goCheckout: () => this.setState({ step: 'checkout' }),
+      goCart: () => this.setState({ step: 'cart' }),
+
+      stepCartBg: active, stepCartColor: '#fff', stepCartColor2: active,
+      stepPayBg: step === 'checkout' ? active : off,
+      stepPayColor: step === 'checkout' ? '#fff' : '#9aa4ba',
+      stepPayColor2: step === 'checkout' ? active : '#9aa4ba',
+
+      rows,
+      allChecked: selectable.length > 0 && selected.length === selectable.length,
+      toggleAll: () => {
+        const target = !(selectable.length > 0 && selected.length === selectable.length);
+        setItems(x => x.sold ? x : { ...x, checked: target });
+      },
+      removeSelected: () => this.setState(s => ({ items: s.items.filter(x => x.sold || !x.checked) })),
+      selectedCount: selected.length,
+      itemCount: selectable.length,
+      goodsText: won(goods),
+
+      orderItems, orderCount: orderItems.length,
+
+      payCard: () => this.setState({ pay: 'card' }),
+      payTransfer: () => this.setState({ pay: 'transfer' }),
+      payDeposit: () => this.setState({ pay: 'deposit' }),
+      payCardBorder: c.border, payCardBg: c.bg,
+      payTransferBorder: t.border, payTransferBg: t.bg,
+      payDepositBorder: d.border, payDepositBg: d.bg,
+      depositShow: pay === 'deposit' ? 'block' : 'none',
+
+      agreeAll: allAg,
+      toggleAgreeAll: () => this.setState({ agree: { t1: !allAg, t2: !allAg, t3: !allAg } }),
+      agree1: ag.t1, agree2: ag.t2, agree3: ag.t3,
+      toggle1: () => toggleAg('t1'), toggle2: () => toggleAg('t2'), toggle3: () => toggleAg('t3'),
+
+      productsOpen: this.state.openMenu === 'products' ? 'block' : 'none',
+      supportOpen: this.state.openMenu === 'support' ? 'block' : 'none',
+      openProducts: () => this.setState({ openMenu: 'products' }),
+      openSupport: () => this.setState({ openMenu: 'support' }),
+      closeMenu: () => this.setState({ openMenu: null }),
+      drawerShow: this.state.drawerOpen ? 'block' : 'none',
+      openDrawer: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ drawerOpen: true }); },
+      closeDrawer: () => this.setState({ drawerOpen: false }),
+    };
+  }
+}
+</script>
+</body>
+</html>
