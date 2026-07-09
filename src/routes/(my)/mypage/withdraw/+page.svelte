@@ -1,5 +1,8 @@
 <script lang="ts">
-	/** 회원탈퇴 확인 UI. actions.withdraw 는 서버 스텁(fail 501) — 실제 탈퇴 처리는 별도 작업에서 구현. */
+	/**
+	 * 회원탈퇴 확인 UI. 제출 시 actions.withdraw 가 처리한다.
+	 * 주문 이력이 없으면 계정 완전삭제, 있으면 익명화 탈퇴(개인정보 비식별화 + 로그인 차단).
+	 */
 	import { enhance } from '$app/forms';
 	import type { PageProps } from './$types';
 

@@ -7,6 +7,24 @@
 	let { data, form }: PageProps = $props();
 	let submitting = $state(false);
 
+	// "최근 배송지 불러오기" — uncontrolled 폼이므로 클릭 시 입력값을 직접 채운다.
+	// (bind 없이 value 속성만 쓰는 기존 방식·검증 실패 복원 동작을 그대로 유지)
+	function loadRecentAddress(e: MouseEvent) {
+		const a = data.recentAddress;
+		if (!a) return;
+		const formEl = (e.currentTarget as HTMLElement).closest('form');
+		if (!formEl) return;
+		const set = (name: string, value: string) => {
+			const el = formEl.elements.namedItem(name);
+			if (el instanceof HTMLInputElement) el.value = value;
+		};
+		set('receiver_name', a.receiver_name);
+		set('receiver_phone', a.receiver_phone);
+		set('zip', a.zip ?? '');
+		set('addr1', a.addr1 ?? '');
+		set('addr2', a.addr2 ?? '');
+	}
+
 	const v = $derived(
 		form?.values ?? {
 			receiver_name: data.profile?.name ?? '',
@@ -47,6 +65,15 @@
 	<div class="space-y-6">
 		<fieldset class="rounded-xl border border-line bg-surface p-5">
 			<legend class="px-1 text-[16px] font-black text-ink">배송지</legend>
+			{#if data.recentAddress}
+				<button
+					type="button"
+					onclick={loadRecentAddress}
+					class="mt-1 min-h-11 rounded-lg border border-navy px-3 py-2 text-[14px] font-bold text-navy hover:bg-navy-tint"
+				>
+					최근 배송지 불러오기
+				</button>
+			{/if}
 			<div class="mt-3 space-y-3">
 				<label class="block">
 					<span class="text-[14px] font-bold text-ink">받는 분 *</span>

@@ -15,7 +15,7 @@ export const actions: Actions = {
 		if (!user) redirect(303, '/login');
 
 		const fd = await request.formData();
-		if (fd.get('confirm') == null) {
+		if (fd.get('agree') == null) {
 			return fail(400, { message: '탈퇴에 동의하셔야 진행할 수 있습니다.' });
 		}
 

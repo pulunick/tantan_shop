@@ -25,12 +25,27 @@ export const load: PageServerLoad = async ({ locals: { supabase, safeGetSession 
 	const summaryTotal = rows.filter((r) => r.orderable).reduce((s, r) => s + r.lineTotal, 0);
 	const hasBlocked = rows.some((r) => !r.orderable);
 
-	const [{ data: profile }, { data: bank }] = await Promise.all([
+	const [{ data: profile }, { data: bank }, { data: recent }] = await Promise.all([
 		supabase.from('profiles').select('name, phone').eq('id', user.id).maybeSingle(),
-		supabase.from('site_settings').select('value').eq('key', 'bank_account').maybeSingle()
+		supabase.from('site_settings').select('value').eq('key', 'bank_account').maybeSingle(),
+		// 재구매 편의: 가장 최근 주문의 배송지 1건 (있으면 "최근 배송지 불러오기" 로 프리필)
+		supabase
+			.from('orders')
+			.select('receiver_name, receiver_phone, zip, addr1, addr2')
+			.eq('user_id', user.id)
+			.order('created_at', { ascending: false })
+			.limit(1)
+			.maybeSingle()
 	]);
 
-	return { rows, summaryTotal, hasBlocked, profile: profile ?? null, bank: bank?.value ?? null };
+	return {
+		rows,
+		summaryTotal,
+		hasBlocked,
+		profile: profile ?? null,
+		bank: bank?.value ?? null,
+		recentAddress: recent ?? null
+	};
 };
 
 export const actions: Actions = {
