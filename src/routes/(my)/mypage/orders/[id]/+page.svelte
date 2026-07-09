@@ -1,6 +1,7 @@
 <script lang="ts">
 	/**
-	 * 주문 상세. 취소 요청은 서버 스텁(fail 501) — 실제 취소 처리는 별도 작업에서 구현.
+	 * 주문 상세. 배송준비 전(pending/paid) 주문은 취소 요청 가능
+	 * (서버 cancel 액션 → requestOrderCancel 로 본인·상태 검증 후 처리).
 	 */
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';

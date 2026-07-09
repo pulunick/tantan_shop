@@ -2,7 +2,7 @@
 	/**
 	 * 문의하기 — 단일 폼 (일반/견적/예약). 예약 유형만 희망일·현장주소를 추가로 받는다.
 	 * 비회원은 이름/연락처/비밀번호(비밀글 확인용)를 추가로 입력한다.
-	 * 제출 액션은 현재 스텁(501) — DB insert/비밀번호 해시는 별도 작업에서 연동한다.
+	 * 제출 시 서버 액션이 inquiries 에 insert 하며, 비회원 비밀번호는 scrypt 로 해시한다.
 	 */
 	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';

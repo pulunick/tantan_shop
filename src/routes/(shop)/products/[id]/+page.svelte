@@ -2,7 +2,7 @@
 	/**
 	 * 상품 상세 페이지.
 	 * 3상태: 판매중(장바구니/바로구매) · 품절(버튼 비활성) · 전화문의(가격 대신 텍스트 + 전화 버튼, 장바구니 진입 차단).
-	 * 장바구니/바로구매 버튼은 상태만 정확히 구현하고 실제 동작은 스텁(TODO)이다 — 별도 작업에서 연동.
+	 * 장바구니 담기·바로구매는 addToCart 헬퍼로 동작한다(비회원 localStorage / 회원 서버).
 	 */
 	import ProductPrice from '$lib/components/ui/ProductPrice.svelte';
 	import { formatPrice } from '$lib/utils/format';
