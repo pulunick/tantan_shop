@@ -124,7 +124,12 @@
 									class="h-14 w-14 flex-none overflow-hidden rounded-lg border border-line-2 bg-bg"
 								>
 									{#if p.thumbnailUrl}
-										<img src={p.thumbnailUrl} alt={p.name} class="h-full w-full object-cover" />
+										<img
+											src={p.thumbnailUrl}
+											alt={p.name}
+											loading="lazy"
+											class="h-full w-full object-cover"
+										/>
 									{/if}
 								</div>
 								<span class="text-[15px] font-bold text-ink">{p.name}</span>

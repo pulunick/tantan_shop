@@ -52,7 +52,12 @@
 			<li class="flex flex-col overflow-hidden rounded-xl border border-line bg-surface">
 				<div class="aspect-video w-full bg-bg">
 					{#if item.thumbnailUrl}
-						<img src={item.thumbnailUrl} alt={item.title} class="h-full w-full object-cover" />
+						<img
+							src={item.thumbnailUrl}
+							alt={item.title}
+							loading="lazy"
+							class="h-full w-full object-cover"
+						/>
 					{/if}
 				</div>
 				<div class="flex flex-1 flex-col gap-2 p-4">

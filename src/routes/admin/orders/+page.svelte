@@ -2,17 +2,34 @@
 	/**
 	 * 주문 관리 목록. 상태 탭 · 검색(주문번호/받는분) · 페이지네이션.
 	 * 각 행은 주문 상세(/admin/orders/[id])로 연결된다.
+	 * 결제대기 행은 원클릭 입금확인(확인 다이얼로그 → confirmPayment action) 버튼도 노출한다.
+	 * DESIGN_SPEC [12](1) 탄탄편의시설-관리자-보강.dc.html 재구현(마크업/스크립트 미복사, 값만 참조).
 	 */
+	import { enhance } from '$app/forms';
 	import { resolve } from '$app/paths';
+	import { toast } from 'svelte-sonner';
 	import { formatDate, formatPrice } from '$lib/utils/format';
 	import StatusPill from '$lib/components/ui/StatusPill.svelte';
 	import Pagination from '$lib/components/ui/Pagination.svelte';
 	import { STATUS_TABS } from './shared';
 	import type { PageData } from './$types';
+	import type { OrderListItem } from './+page.server';
 
 	let { data }: { data: PageData } = $props();
 
 	let totalPages = $derived(Math.ceil(data.total / data.pageSize));
+
+	let confirmOrder: OrderListItem | null = $state(null);
+	let dialogEl: HTMLDialogElement | undefined = $state();
+	let submitting = $state(false);
+
+	function openConfirm(order: OrderListItem) {
+		confirmOrder = order;
+		dialogEl?.showModal();
+	}
+	function closeConfirm() {
+		dialogEl?.close();
+	}
 
 	/**
 	 * URLSearchParams 인스턴스 없이(svelte/prefer-svelte-reactivity) 쿼리 문자열을 직접 조립.
@@ -129,12 +146,36 @@
 						>
 						<td class="px-3 py-[14px] text-center"><StatusPill status={order.order_status} /></td>
 						<td class="px-5 py-[14px] text-center">
-							<a
-								href={resolve('/admin/orders/[id]', { id: order.id })}
-								class="inline-flex min-h-11 items-center rounded-lg border border-navy px-4 text-[14px] font-extrabold text-navy hover:bg-navy-tint"
-							>
-								상세
-							</a>
+							<div class="flex items-center justify-center gap-2">
+								{#if order.order_status === 'pending'}
+									<button
+										type="button"
+										onclick={() => openConfirm(order)}
+										class="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-yellow px-4 text-[14px] font-extrabold whitespace-nowrap text-navy hover:bg-yellow-hover"
+									>
+										<svg
+											width="16"
+											height="16"
+											viewBox="0 0 24 24"
+											fill="none"
+											stroke="currentColor"
+											stroke-width="2.4"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											aria-hidden="true"
+										>
+											<path d="M5 12.5l4.5 4.5L19 7.5" />
+										</svg>
+										입금확인
+									</button>
+								{/if}
+								<a
+									href={resolve('/admin/orders/[id]', { id: order.id })}
+									class="inline-flex min-h-11 items-center rounded-lg border border-navy px-4 text-[14px] font-extrabold text-navy hover:bg-navy-tint"
+								>
+									상세
+								</a>
+							</div>
 						</td>
 					</tr>
 				{/each}
@@ -148,3 +189,84 @@
 		</div>
 	{/if}
 {/if}
+
+<!-- 입금확인 확인 다이얼로그 -->
+<dialog
+	bind:this={dialogEl}
+	onclick={(e) => {
+		if (e.target === dialogEl) closeConfirm();
+	}}
+	class="m-auto w-[440px] max-w-[92%] rounded-2xl border-none p-0 shadow-[0_20px_50px_rgba(0,0,0,.32)] backdrop:bg-[rgba(10,15,25,.55)]"
+>
+	<div class="p-7">
+		<span
+			class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-status-preparing-bg"
+		>
+			<svg
+				width="28"
+				height="28"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2.2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+				class="text-status-preparing-fg"
+				aria-hidden="true"
+			>
+				<rect x="3" y="6" width="18" height="13" rx="2" />
+				<path d="M3 10h18" />
+			</svg>
+		</span>
+		<h3 class="mb-3 text-center text-[20px] font-black text-ink">입금확인 처리할까요?</h3>
+		<p class="mb-2 text-center text-[16px] leading-relaxed font-semibold text-sub">
+			주문 <b class="font-mono text-navy">{confirmOrder?.order_no}</b> 을(를)<br />입금확인
+			처리합니다.
+		</p>
+		<div class="my-4 text-center">
+			<span class="text-[14px] font-bold text-sub">입금 금액</span>
+			<div class="mt-0.5 text-[30px] font-black tracking-tight text-navy">
+				{confirmOrder ? formatPrice(confirmOrder.total_amount) : ''}
+			</div>
+		</div>
+		<div class="grid grid-cols-2 gap-2.5">
+			<button
+				type="button"
+				onclick={closeConfirm}
+				class="min-h-[52px] rounded-[11px] border border-line-2 bg-surface text-[16px] font-extrabold text-ink hover:bg-bg"
+			>
+				돌아가기
+			</button>
+			<form
+				method="POST"
+				action="?/confirmPayment"
+				use:enhance={() => {
+					submitting = true;
+					return async ({ result, update }) => {
+						submitting = false;
+						closeConfirm();
+						if (result.type === 'success') {
+							toast.success('입금확인 처리되었습니다');
+						} else {
+							const msg =
+								result.type === 'failure' && typeof result.data?.message === 'string'
+									? result.data.message
+									: '입금확인 처리에 실패했습니다. 다시 시도해 주세요.';
+							toast.error(msg);
+						}
+						await update();
+					};
+				}}
+			>
+				<input type="hidden" name="id" value={confirmOrder?.id ?? ''} />
+				<button
+					type="submit"
+					disabled={submitting}
+					class="min-h-[52px] w-full rounded-[11px] bg-yellow text-[16px] font-black text-navy hover:bg-yellow-hover disabled:opacity-60"
+				>
+					{submitting ? '처리 중…' : '입금확인'}
+				</button>
+			</form>
+		</div>
+	</div>
+</dialog>

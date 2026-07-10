@@ -1,10 +1,12 @@
-import type { PageServerLoad } from './$types';
+import { fail } from '@sveltejs/kit';
+import type { Actions, PageServerLoad } from './$types';
 import type { OrderStatus } from '$lib/types';
-import { STATUS_TABS } from './shared';
+import { STATUS_TABS, paymentStatusFor } from './shared';
 
 /**
  * 주문 관리 목록. 상태 탭 + 주문번호/받는분 이름 검색 + 페이지네이션.
  * admin RLS(orders_select_own_or_admin) 로 전체 주문이 조회된다.
+ * 원클릭 입금확인(confirmPayment) : 결제대기 행에서 바로 결제완료 처리.
  */
 
 const PAGE_SIZE = 20;
@@ -96,4 +98,30 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
 		q,
 		countMap
 	};
+};
+
+export const actions: Actions = {
+	// 원클릭 입금확인: 결제대기(pending) 주문만 결제완료(paid)로 전환.
+	// .eq('order_status', 'pending') 조건으로 이미 처리된 주문의 이중 처리를 막고, 갱신 행 수로 성공 판정한다.
+	confirmPayment: async ({ request, locals: { supabase } }) => {
+		const fd = await request.formData();
+		const id = fd.get('id')?.toString();
+
+		if (!id) return fail(400, { message: '잘못된 요청입니다.' });
+
+		const nextStatus: OrderStatus = 'paid';
+		const { data, error: updErr } = await supabase
+			.from('orders')
+			.update({ order_status: nextStatus, payment_status: paymentStatusFor(nextStatus) })
+			.eq('id', id)
+			.eq('order_status', 'pending')
+			.select('id');
+
+		if (updErr) return fail(500, { message: '입금확인 처리 중 오류가 발생했습니다.' });
+		if (!data || data.length === 0) {
+			return fail(409, { message: '이미 처리되었거나 존재하지 않는 주문입니다.' });
+		}
+
+		return { success: true, message: '입금확인 처리되었습니다.' };
+	}
 };

@@ -146,7 +146,12 @@
 			<ul class="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
 				{#each data.images as image (image.id)}
 					<li class="relative overflow-hidden rounded-lg border border-line-2">
-						<img src={image.url} alt="시공사례 이미지" class="aspect-square w-full object-cover" />
+						<img
+							src={image.url}
+							alt="시공사례 이미지"
+							loading="lazy"
+							class="aspect-square w-full object-cover"
+						/>
 						<button
 							type="button"
 							onclick={() => deleteImage(image.id)}

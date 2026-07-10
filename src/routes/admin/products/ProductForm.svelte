@@ -13,6 +13,9 @@
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
 	import { uploadToMedia, removeFromMedia } from '$lib/upload';
+	import { compressImage } from '$lib/image-compress';
+	import { formatNumberInput, parseNumberInput } from '$lib/utils/format';
+	import RichTextEditor from '$lib/components/admin/RichTextEditor.svelte';
 	import type { Category, ProductStatus } from '$lib/types';
 
 	export type ProductFormOption = { id?: string; name: string; extraPrice: number };
@@ -49,7 +52,7 @@
 	let name = $state(init.name);
 	let categoryId = $state(init.categoryId ?? untrack(() => categories)[0]?.id ?? '');
 	let isPhoneInquiry = $state(init.isPriceHidden);
-	let priceInput = $state(init.price != null ? String(init.price) : '');
+	let priceInput = $state(init.price != null ? formatNumberInput(String(init.price)) : '');
 	let status = $state<ProductStatus>(init.status);
 	let descriptionHtml = $state(init.descriptionHtml ?? '');
 
@@ -101,7 +104,9 @@
 		errorMsg = '';
 
 		for (const file of Array.from(files)) {
-			const result = await uploadToMedia(supabase, 'products', file);
+			// 업로드 전 클라이언트 압축(최대 1600px / 약 300KB). 실패 시 원본으로 업로드한다.
+			const compressed = await compressImage(file, { maxWidthOrHeight: 1600, maxSizeMB: 0.3 });
+			const result = await uploadToMedia(supabase, 'products', compressed);
 			if ('error' in result) {
 				errorMsg = `이미지 업로드 실패(${file.name}): ${result.error}`;
 				continue;
@@ -161,12 +166,12 @@
 
 		let price: number | null = null;
 		if (!isPhoneInquiry) {
-			const n = Number(priceInput);
-			if (!priceInput || !Number.isFinite(n) || n < 0) {
+			const n = parseNumberInput(priceInput);
+			if (n == null || n < 0) {
 				errorMsg = '판매가를 올바르게 입력해 주세요.';
 				return;
 			}
-			price = Math.round(n);
+			price = n;
 		}
 
 		if (imageRows.length === 0) {
@@ -176,13 +181,34 @@
 
 		saving = true;
 
+		// 상세설명(Tiptap HTML)은 저장 전 서버에서 sanitize 한다 — admin 전용 입력이라도
+		// 계정 탈취 등에 대비한 XSS 방어(CLAUDE.md 관리자 UI 보강 요구사항).
+		let descriptionHtmlSafe: string | null = null;
+		const trimmedDescription = descriptionHtml.trim();
+		if (trimmedDescription) {
+			try {
+				const res = await fetch(resolve('/admin/products/sanitize-description'), {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ html: trimmedDescription })
+				});
+				if (!res.ok) throw new Error('sanitize failed');
+				const json = (await res.json()) as { html: string };
+				descriptionHtmlSafe = json.html || null;
+			} catch {
+				errorMsg = '상세설명 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+				saving = false;
+				return;
+			}
+		}
+
 		const payload = {
 			category_id: categoryId,
 			name: trimmedName,
 			price,
 			is_price_hidden: isPhoneInquiry,
 			status,
-			description_html: descriptionHtml.trim() || null
+			description_html: descriptionHtmlSafe
 		};
 
 		let id = productId;
@@ -319,11 +345,10 @@
 		<div class="flex items-center gap-2.5">
 			<input
 				id="pf-price"
-				type="number"
-				min="0"
-				step="1"
+				type="text"
 				inputmode="numeric"
-				bind:value={priceInput}
+				value={priceInput}
+				oninput={(e) => (priceInput = formatNumberInput(e.currentTarget.value))}
 				disabled={isPhoneInquiry}
 				placeholder="숫자만 입력"
 				class="min-h-11 flex-1 rounded-[10px] border border-line-2 px-4 py-3.5 text-[16px] text-ink focus:ring-2 focus:ring-navy focus:outline-none disabled:bg-bg disabled:text-sub"
@@ -439,6 +464,7 @@
 							<img
 								src={img.url}
 								alt={img.originalName ?? '상품 이미지'}
+								loading="lazy"
 								class="h-full w-full object-cover"
 							/>
 							{#if img.isThumbnail}
@@ -529,16 +555,8 @@
 	</div>
 
 	<div>
-		<label for="pf-description" class="mb-2.5 block text-[16px] font-extrabold text-ink"
-			>상세설명 (HTML)</label
-		>
-		<textarea
-			id="pf-description"
-			bind:value={descriptionHtml}
-			rows="8"
-			placeholder="제품 사양, 규격, 시공 안내 등을 HTML 로 입력하세요."
-			class="w-full resize-y rounded-[10px] border border-line-2 px-4 py-3.5 text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none"
-		></textarea>
+		<span class="mb-2.5 block text-[16px] font-extrabold text-ink">상세설명</span>
+		<RichTextEditor {supabase} bind:value={descriptionHtml} />
 	</div>
 
 	<div class="flex gap-3.5 pt-1">

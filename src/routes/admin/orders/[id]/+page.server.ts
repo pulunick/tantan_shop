@@ -1,12 +1,14 @@
 import { error, fail } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import type { OrderStatus } from '$lib/types';
+import { paymentStatusFor } from '../shared';
 
 /**
  * 주문 상세 + 상태 플로우.
  * 상태 플로우: 결제대기(pending)→결제완료(paid)→배송준비(preparing)→배송중(shipping)→배송완료(delivered)
  * + 취소(cancelled)/환불(refunded). 배송중 전환 시 택배사·송장번호 필수.
  * 결제 관련 payment_status 는 order_status 에 맞춰 함께 갱신한다(클라이언트 값 신뢰 안 함, 서버에서 매핑).
+ * paymentStatusFor 는 목록 화면의 원클릭 입금확인 action과 공유(../shared.ts) — 매핑 규칙 단일화.
  */
 
 const ORDER_STATUSES: OrderStatus[] = [
@@ -18,13 +20,6 @@ const ORDER_STATUSES: OrderStatus[] = [
 	'cancelled',
 	'refunded'
 ];
-
-function paymentStatusFor(orderStatus: OrderStatus): 'pending' | 'paid' | 'cancelled' | 'refunded' {
-	if (orderStatus === 'pending') return 'pending';
-	if (orderStatus === 'cancelled') return 'cancelled';
-	if (orderStatus === 'refunded') return 'refunded';
-	return 'paid'; // paid/preparing/shipping/delivered
-}
 
 export type OrderItemRow = {
 	id: string;

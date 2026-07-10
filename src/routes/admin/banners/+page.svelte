@@ -7,6 +7,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { formatDate } from '$lib/utils/format';
 	import { uploadToMedia } from '$lib/upload';
+	import { compressImage, formatFileSize } from '$lib/image-compress';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -14,11 +15,25 @@
 	let banners = $derived(data.banners);
 
 	let fileInput: HTMLInputElement | undefined = $state();
+	let selectedFile: File | null = $state(null);
+	let previewUrl: string | null = $state(null);
+	let compressing = $state(false);
 	let linkUrl = $state('');
 	let startAt = $state('');
 	let endAt = $state('');
 	let submitting = $state(false);
 	let errorMessage = $state('');
+
+	// selectedFile이 바뀔 때마다(파일 재선택/취소/컴포넌트 해제 시) 이전 objectURL을 해제한다.
+	$effect(() => {
+		const url = previewUrl;
+		return () => {
+			if (url) URL.revokeObjectURL(url);
+		};
+	});
+
+	// 압축 진행 중인 Promise. 등록 제출 시 완료를 기다렸다가 압축본을 업로드한다.
+	let compressTask: Promise<File> | null = null;
 
 	function periodLabel(start: string | null, end: string | null): string {
 		if (!start && !end) return '상시 노출';
@@ -27,19 +42,53 @@
 		return `${s} ~ ${e}`;
 	}
 
+	function handleFileChange() {
+		const file = fileInput?.files?.[0];
+		if (!file) return;
+
+		errorMessage = '';
+		selectedFile = file;
+		previewUrl = URL.createObjectURL(file);
+		compressing = true;
+
+		compressTask = compressImage(file, { maxWidthOrHeight: 1920, maxSizeMB: 1 })
+			.then((compressed) => {
+				selectedFile = compressed;
+				return compressed;
+			})
+			.finally(() => {
+				compressing = false;
+			});
+	}
+
+	function resetSelection() {
+		selectedFile = null;
+		previewUrl = null;
+		compressing = false;
+		compressTask = null;
+		if (fileInput) fileInput.value = '';
+	}
+
 	async function handleAdd(e: SubmitEvent) {
 		e.preventDefault();
 		errorMessage = '';
 
-		const file = fileInput?.files?.[0];
-		if (!file) {
+		if (!selectedFile) {
 			errorMessage = '배너 이미지를 선택해 주세요.';
 			return;
 		}
 
 		submitting = true;
 
-		const uploaded = await uploadToMedia(data.supabase, 'banners', file);
+		if (compressTask) {
+			try {
+				await compressTask;
+			} catch {
+				// 압축 실패는 compressImage 내부에서 원본으로 폴백하므로 여기서는 무시한다.
+			}
+		}
+
+		const uploaded = await uploadToMedia(data.supabase, 'banners', selectedFile);
 		if ('error' in uploaded) {
 			errorMessage = `이미지 업로드에 실패했습니다: ${uploaded.error}`;
 			submitting = false;
@@ -66,7 +115,7 @@
 		linkUrl = '';
 		startAt = '';
 		endAt = '';
-		if (fileInput) fileInput.value = '';
+		resetSelection();
 		await invalidateAll();
 	}
 
@@ -114,6 +163,7 @@
 					<img
 						src={banner.image_url}
 						alt="배너 미리보기"
+						loading="lazy"
 						class="h-20 w-36 flex-none rounded-lg border border-line object-cover"
 					/>
 
@@ -232,15 +282,118 @@
 			<label for="banner-file" class="mb-2 block text-[15px] font-extrabold text-ink"
 				>배너 이미지</label
 			>
+
+			{#if !previewUrl}
+				<label
+					for="banner-file"
+					class="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-line-2 bg-bg-admin/50 px-6 py-9 text-center hover:border-navy/50"
+				>
+					<svg
+						width="30"
+						height="30"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="#8a94a6"
+						stroke-width="1.7"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"><path d="M12 16V4M6 10l6-6 6 6M4 20h16" /></svg
+					>
+					<span class="text-[15px] font-extrabold text-ink">배너 이미지를 선택하세요</span>
+					<span class="text-[13.5px] text-sub"
+						>권장 <b class="text-navy">1920 × 600px</b> · 5MB 이하 · JPG / PNG</span
+					>
+				</label>
+			{/if}
+
 			<input
 				id="banner-file"
 				bind:this={fileInput}
 				type="file"
 				accept="image/*"
-				required
-				class="block w-full rounded-lg border border-line-2 px-4 py-3 text-[15px]"
+				onchange={handleFileChange}
+				class="sr-only"
 			/>
-			<p class="mt-1.5 text-[13px] text-sub">권장 사이즈 1200 × 400px</p>
+
+			{#if previewUrl}
+				<div class="flex flex-col gap-4 rounded-xl border border-line-2 bg-bg-admin/40 p-4">
+					<div class="flex flex-wrap items-center justify-between gap-3">
+						<p class="flex items-center gap-2 text-[14px] font-extrabold text-status-delivered-fg">
+							<svg
+								width="18"
+								height="18"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2.2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg
+							>
+							{selectedFile?.name} · {selectedFile ? formatFileSize(selectedFile.size) : ''}
+							{compressing ? '(압축 중…)' : '업로드 준비 완료'}
+						</p>
+						<button
+							type="button"
+							onclick={resetSelection}
+							class="min-h-11 rounded-lg border border-line-2 bg-surface px-4 text-[14px] font-extrabold text-ink"
+						>
+							다시 업로드
+						</button>
+					</div>
+
+					<div class="grid gap-5 tb:grid-cols-[1fr_240px]">
+						<div>
+							<p class="mb-2 text-[13px] font-extrabold text-sub">
+								PC 미리보기 <span class="font-semibold text-sub/70">(1920×600 비율)</span>
+							</p>
+							<div class="overflow-hidden rounded-xl border border-line-2 shadow-sm">
+								<div class="flex h-[26px] items-center gap-1.5 bg-line-2 px-3">
+									<span class="h-2 w-2 rounded-full bg-white/70"></span>
+									<span class="h-2 w-2 rounded-full bg-white/70"></span>
+									<span class="h-2 w-2 rounded-full bg-white/70"></span>
+								</div>
+								<!-- 실제 메인 배너 PC 렌더 비율 = 1200×400(3:1, (shop)/+page.svelte) — 미리보기도 동일 비율 -->
+								<div class="aspect-[3/1] w-full bg-line">
+									<img src={previewUrl} alt="PC 배너 미리보기" class="h-full w-full object-cover" />
+								</div>
+							</div>
+							<p class="mt-2 text-center text-[12.5px] font-semibold text-sub">
+								PC 화면 노출 영역 (1920×600 원본 기준 좌우 소폭 크롭)
+							</p>
+						</div>
+
+						<div>
+							<p class="mb-2 text-[13px] font-extrabold text-sub">
+								모바일 미리보기 <span class="font-semibold text-sub/70">(중앙 크롭)</span>
+							</p>
+							<div
+								class="mx-auto max-w-[220px] overflow-hidden rounded-[26px] border-[7px] border-navy-dark shadow-sm"
+							>
+								<div class="flex h-[18px] items-center justify-center bg-navy-dark">
+									<span class="h-1.5 w-10 rounded-full bg-white/25"></span>
+								</div>
+								<div class="relative aspect-[360/300] w-full overflow-hidden bg-line">
+									<img
+										src={previewUrl}
+										alt="모바일 배너 미리보기"
+										class="h-full w-full object-cover"
+									/>
+									<span
+										class="pointer-events-none absolute inset-x-0 top-0 h-[22%] border-b border-dashed border-white/70 bg-navy-dark/35"
+									></span>
+									<span
+										class="pointer-events-none absolute inset-x-0 bottom-0 h-[22%] border-t border-dashed border-white/70 bg-navy-dark/35"
+									></span>
+								</div>
+							</div>
+							<p class="mt-2 text-center text-[12.5px] leading-relaxed font-semibold text-sub">
+								모바일에서는 상하 일부가 잘립니다.<br />핵심 문구는 가운데 배치하세요.
+							</p>
+						</div>
+					</div>
+				</div>
+			{/if}
 		</div>
 
 		<div>
