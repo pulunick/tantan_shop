@@ -64,15 +64,30 @@
 			</div>
 			<h2 class="mt-4 text-[20px] font-black text-ink">문의가 접수되었습니다</h2>
 			<p class="mt-2 text-[15px] leading-relaxed text-sub">
-				빠르게 확인 후 답변드리겠습니다.{!data.isLoggedIn
-					? ' 비회원 문의는 등록하신 비밀번호로 답변을 확인할 수 있습니다.'
+				영업시간(평일 09~18시) 내 순차적으로 연락드립니다.{!data.isLoggedIn
+					? ' 문의 확인은 문의 조회에서 등록하신 이름과 비밀번호로 가능합니다.'
 					: ''}
 			</p>
-			<a
-				href={resolve('/')}
-				class="mt-6 inline-block min-h-11 rounded-lg bg-navy px-6 py-3 text-[15px] font-extrabold text-white"
-				>홈으로</a
-			>
+			<div class="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+				{#if !data.isLoggedIn}
+					<a
+						href={resolve('/inquiry/check')}
+						class="inline-flex min-h-11 items-center justify-center rounded-lg bg-navy px-6 py-3 text-[15px] font-extrabold text-white"
+						>문의 조회하기</a
+					>
+					<a
+						href={resolve('/')}
+						class="inline-flex min-h-11 items-center justify-center rounded-lg border border-line-2 bg-surface px-6 py-3 text-[15px] font-extrabold text-navy"
+						>홈으로</a
+					>
+				{:else}
+					<a
+						href={resolve('/')}
+						class="inline-flex min-h-11 items-center justify-center rounded-lg bg-navy px-6 py-3 text-[15px] font-extrabold text-white"
+						>홈으로</a
+					>
+				{/if}
+			</div>
 		</div>
 	{:else}
 		<form
@@ -198,6 +213,7 @@
 					name="title"
 					type="text"
 					placeholder="문의 제목"
+					value={form?.values?.title ?? data.presetTitle}
 					required
 					class="w-full rounded-[9px] border border-line-2 bg-surface px-[14px] py-[13px] text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none"
 				/>
@@ -242,6 +258,7 @@
 							<path d="M12 16V4M6 10l6-6 6 6M4 20h16" />
 						</svg>
 						현장 사진 · 도면 등을 첨부하세요 (JPG, PNG, PDF)
+						<span class="text-[13px] font-semibold text-sub">10MB 이하, 이미지 · PDF</span>
 					</label>
 					<input
 						id="inquiry-file"

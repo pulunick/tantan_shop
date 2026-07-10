@@ -1,18 +1,22 @@
 <script lang="ts">
+	import { SUPPORT_TEL } from '$lib/constants';
 	/**
 	 * 상품 상세 페이지.
 	 * 3상태: 판매중(장바구니/바로구매) · 품절(버튼 비활성) · 전화문의(가격 대신 텍스트 + 전화 버튼, 장바구니 진입 차단).
 	 * 장바구니 담기·바로구매는 addToCart 헬퍼로 동작한다(비회원 localStorage / 회원 서버).
 	 */
 	import ProductPrice from '$lib/components/ui/ProductPrice.svelte';
+	import ImageLightbox from '$lib/components/product/ImageLightbox.svelte';
 	import { formatPrice } from '$lib/utils/format';
 	import { addToCart as addToCartHelper } from '$lib/cart/add';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
+	import { toast } from 'svelte-sonner';
 	import type { PageProps } from './$types';
 
 	// CLAUDE.md 절대 규칙: 전화문의 상품은 이 번호로 고정 (회사 설정과 무관).
-	const PHONE_TEL = '010-4055-3338';
+	const PHONE_TEL = SUPPORT_TEL;
 
 	let { data }: PageProps = $props();
 
@@ -30,6 +34,7 @@
 	let selectedImageIndex = $state(0);
 	let activeTab: 'detail' | 'delivery' = $state('detail');
 	let selectedOptionId: string | null = $state(null);
+	let lightboxOpen = $state(false);
 
 	// 다른 상품으로 이동(같은 컴포넌트 재사용)했을 때 화면 상태 초기화.
 	$effect(() => {
@@ -37,7 +42,23 @@
 		qty = 1;
 		selectedImageIndex = 0;
 		activeTab = 'detail';
+		lightboxOpen = false;
 	});
+
+	function openLightbox(i: number) {
+		if (images.length === 0) return;
+		selectedImageIndex = i;
+		lightboxOpen = true;
+	}
+
+	async function copyProductUrl() {
+		try {
+			await navigator.clipboard.writeText(page.url.href);
+			toast.success('링크가 복사되었습니다');
+		} catch {
+			toast.error('링크 복사에 실패했습니다. 잠시 후 다시 시도해 주세요.');
+		}
+	}
 
 	// 옵션 목록이 바뀌거나(=상품 변경) 선택값이 더 이상 유효하지 않으면 기본값으로 보정.
 	$effect(() => {
@@ -100,7 +121,42 @@
 	<div>
 		<div class="relative aspect-square overflow-hidden rounded-xl border border-line bg-bg">
 			{#if mainImage}
-				<img src={mainImage.url} alt={product.name} class="h-full w-full object-cover" />
+				<button
+					type="button"
+					onclick={() => openLightbox(selectedImageIndex)}
+					class="relative block h-full w-full cursor-zoom-in"
+					aria-label="{product.name} 이미지 크게 보기"
+				>
+					<img src={mainImage.url} alt={product.name} class="h-full w-full object-cover" />
+					<span
+						class="absolute top-3 right-3 flex items-center gap-1.5 rounded-lg bg-[rgba(20,27,43,0.82)] px-[11px] py-[7px] text-[12.5px] font-bold text-white"
+					>
+						<svg
+							width="15"
+							height="15"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							aria-hidden="true"
+						>
+							<circle cx="10.5" cy="10.5" r="6" />
+							<path d="M15 15l4.5 4.5" />
+							<path d="M10.5 8v5M8 10.5h5" />
+						</svg>
+						이미지 크게 보기
+					</span>
+
+					{#if variant === 'sold_out'}
+						<div class="absolute inset-0 flex items-center justify-center bg-bg/60">
+							<span class="rounded-lg bg-navy-dark px-6 py-2 text-lg font-extrabold text-white"
+								>품절</span
+							>
+						</div>
+					{/if}
+				</button>
 			{:else}
 				<div class="flex h-full w-full items-center justify-center text-sub">
 					<svg
@@ -119,14 +175,14 @@
 						<path d="M21 15l-5-5L5 21" />
 					</svg>
 				</div>
-			{/if}
 
-			{#if variant === 'sold_out'}
-				<div class="absolute inset-0 flex items-center justify-center bg-bg/60">
-					<span class="rounded-lg bg-navy-dark px-6 py-2 text-lg font-extrabold text-white"
-						>품절</span
-					>
-				</div>
+				{#if variant === 'sold_out'}
+					<div class="absolute inset-0 flex items-center justify-center bg-bg/60">
+						<span class="rounded-lg bg-navy-dark px-6 py-2 text-lg font-extrabold text-white"
+							>품절</span
+						>
+					</div>
+				{/if}
 			{/if}
 		</div>
 
@@ -142,21 +198,51 @@
 						aria-label="{product.name} 이미지 {i + 1}"
 						aria-pressed={i === selectedImageIndex}
 					>
-						<img src={img.url} alt="" class="h-full w-full object-cover" />
+						<img src={img.url} alt="" loading="lazy" class="h-full w-full object-cover" />
 					</button>
 				{/each}
 			</div>
 		{/if}
 	</div>
 
+	<ImageLightbox
+		bind:open={lightboxOpen}
+		bind:index={selectedImageIndex}
+		{images}
+		title={product.name}
+	/>
+
 	<!-- 구매 패널 -->
 	<div class="rounded-xl border border-line bg-surface p-7">
 		{#if product.category}
 			<span class="mb-2 block text-[13px] font-bold text-sub">{product.category.name}</span>
 		{/if}
-		<h1 class="mb-2 text-[25px] leading-snug font-black tracking-tight text-ink">
-			{product.name}
-		</h1>
+		<div class="flex items-start justify-between gap-3">
+			<h1 class="mb-2 text-[25px] leading-snug font-black tracking-tight text-ink">
+				{product.name}
+			</h1>
+			<button
+				type="button"
+				onclick={copyProductUrl}
+				aria-label="상품 링크 복사"
+				class="flex h-9 w-9 flex-none items-center justify-center rounded-lg border border-line-2 text-sub hover:border-navy hover:text-navy"
+			>
+				<svg
+					width="17"
+					height="17"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M10 13a5 5 0 0 0 7.5.5l2-2a5 5 0 0 0-7-7l-1.5 1.5" />
+					<path d="M14 11a5 5 0 0 0-7.5-.5l-2 2a5 5 0 0 0 7 7l1.5-1.5" />
+				</svg>
+			</button>
+		</div>
 
 		<div class="my-5 h-px bg-line"></div>
 
@@ -298,6 +384,29 @@
 				</svg>
 				전화 문의하기 {PHONE_TEL}
 			</a>
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+			<a
+				href="{resolve('/inquiry')}?type=quote&product={encodeURIComponent(product.name)}"
+				class="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-lg border-2 border-navy bg-surface py-[13px] text-[15.5px] font-extrabold text-navy hover:bg-bg"
+			>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M4 5h16v11H9l-4 3.5V16H4z" />
+				</svg>
+				문의 남기기
+			</a>
+			<p class="mt-3 text-center text-[13px] leading-relaxed text-sub">
+				영업시간(평일 09~18시) 외에는 문의를 남겨주세요. 확인 후 순차 연락드립니다.
+			</p>
 		{/if}
 
 		<p class="mt-5 text-[12.5px] leading-relaxed text-sub">
@@ -337,9 +446,18 @@
 	{#if activeTab === 'detail'}
 		<div class="prose prose-headings:text-ink max-w-none py-7 text-ink">
 			{#if product.description_html}
-				<!-- 상세설명은 관리자(admin)만 작성하는 신뢰된 HTML (위지윅). Phase 1 admin 전용 -->
-				<!-- eslint-disable-next-line svelte/no-at-html-tags -->
-				{@html product.description_html}
+				{#if /<[a-z][\s\S]*>/i.test(product.description_html)}
+					<!-- 상세설명은 관리자(admin)가 위지윅(Tiptap)으로 작성하고, 저장 시 서버(sanitize-html)에서
+					     정제된 HTML이다. 정제 이전(과거)에 태그 없는 plain text 로 저장된 데이터가
+					     남아있을 수 있어, 태그가 없으면 아래 plain-text 분기로 안전하게(자동 이스케이프) 표시한다. -->
+					<!-- eslint-disable-next-line svelte/no-at-html-tags -->
+					{@html product.description_html}
+				{:else}
+					<!-- 위지윅 도입 전 plain text 상세설명 호환: 개행만 보존해 표시(자동 이스케이프). -->
+					<p class="whitespace-pre-line text-[15px] leading-relaxed text-ink">
+						{product.description_html}
+					</p>
+				{/if}
 			{:else}
 				<p class="text-[15px] text-sub">등록된 상세설명이 없습니다.</p>
 			{/if}
@@ -397,26 +515,48 @@
 			일시 품절
 		</button>
 	{:else}
-		<a
-			href="tel:{PHONE_TEL}"
-			class="flex min-h-11 items-center justify-center gap-2 rounded-lg bg-yellow py-[14px] text-[16px] font-extrabold text-navy"
-		>
-			<svg
-				width="18"
-				height="18"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				aria-hidden="true"
+		<div class="flex gap-2.5">
+			<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+			<a
+				href="{resolve('/inquiry')}?type=quote&product={encodeURIComponent(product.name)}"
+				class="flex min-h-11 flex-none items-center justify-center gap-1.5 rounded-lg border-2 border-navy bg-surface px-4 py-[14px] text-[15px] font-extrabold text-navy"
 			>
-				<path
-					d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"
-				/>
-			</svg>
-			전화 문의하기
-		</a>
+				<svg
+					width="16"
+					height="16"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.8"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path d="M4 5h16v11H9l-4 3.5V16H4z" />
+				</svg>
+				문의
+			</a>
+			<a
+				href="tel:{PHONE_TEL}"
+				class="flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg bg-yellow py-[14px] text-[16px] font-extrabold text-navy"
+			>
+				<svg
+					width="18"
+					height="18"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					aria-hidden="true"
+				>
+					<path
+						d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"
+					/>
+				</svg>
+				전화 문의하기
+			</a>
+		</div>
 	{/if}
 </div>

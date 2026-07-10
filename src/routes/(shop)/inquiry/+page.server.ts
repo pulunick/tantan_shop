@@ -13,8 +13,11 @@ function parseType(value: string | null): InquiryType {
  * 로그인 여부는 게스트 입력 필드(이름/연락처/비밀번호) 노출 여부를 결정한다.
  */
 export const load: PageServerLoad = async ({ url, locals: { session } }) => {
+	// 상품 상세 '문의 남기기'에서 ?product=<상품명> 으로 진입 시 제목 프리필 (길이 제한으로 방어)
+	const presetProduct = (url.searchParams.get('product') ?? '').trim().slice(0, 100);
 	return {
 		presetType: parseType(url.searchParams.get('type')),
+		presetTitle: presetProduct ? `[${presetProduct}] 상품 문의` : '',
 		isLoggedIn: session != null
 	};
 };

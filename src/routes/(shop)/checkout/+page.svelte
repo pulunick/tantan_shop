@@ -1,11 +1,90 @@
 <script lang="ts">
 	/** 주문/결제 — 배송지 + 무통장입금(입금자명) + 약관 동의. 금액은 서버에서 재계산된다. */
 	import { enhance } from '$app/forms';
-	import { formatPrice } from '$lib/utils/format';
+	import { toast } from 'svelte-sonner';
+	import { formatPhoneInput, formatPrice } from '$lib/utils/format';
+	import CopyButton from '$lib/components/ui/CopyButton.svelte';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 	let submitting = $state(false);
+	let postcodeLoading = $state(false);
+	// 우편번호 스크립트 로드 실패 시 true — zip/addr1 을 직접 입력할 수 있게 readonly 를 푼다.
+	// (광고차단기/사내망 등에서 스크립트가 차단돼도 주문이 막히지 않도록 하는 폴백)
+	let manualAddressMode = $state(false);
+
+	// Daum 우편번호 서비스 — 키 발급 불필요, 필요 시점(버튼 클릭)에 스크립트 동적 로드.
+	const DAUM_POSTCODE_SRC = 'https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+
+	type DaumPostcodeResult = { zonecode: string; address: string };
+	type DaumPostcodeCtor = new (opts: { oncomplete: (data: DaumPostcodeResult) => void }) => {
+		open: () => void;
+	};
+
+	function loadDaumPostcodeScript(): Promise<void> {
+		return new Promise((resolvePromise, reject) => {
+			const w = window as typeof window & { daum?: { Postcode: DaumPostcodeCtor } };
+			if (w.daum?.Postcode) {
+				resolvePromise();
+				return;
+			}
+			const existing = document.querySelector<HTMLScriptElement>(
+				`script[src="${DAUM_POSTCODE_SRC}"]`
+			);
+			if (existing) {
+				existing.addEventListener('load', () => resolvePromise());
+				existing.addEventListener('error', () => reject(new Error('postcode script load failed')));
+				return;
+			}
+			const script = document.createElement('script');
+			script.src = DAUM_POSTCODE_SRC;
+			script.onload = () => resolvePromise();
+			script.onerror = () => {
+				// 실패한 태그를 남겨두면 재클릭 시 이미 settled 된 태그에 리스너를 붙여
+				// Promise 가 영원히 pending 된다 — 제거해서 재시도가 새로 로드하게 한다.
+				script.remove();
+				reject(new Error('postcode script load failed'));
+			};
+			document.head.appendChild(script);
+		});
+	}
+
+	async function openPostcodeSearch(e: MouseEvent) {
+		const formEl = (e.currentTarget as HTMLElement).closest('form');
+		if (!formEl) return;
+
+		postcodeLoading = true;
+		try {
+			await loadDaumPostcodeScript();
+		} catch {
+			postcodeLoading = false;
+			// 스크립트 차단/오프라인 폴백: 직접 입력을 열고 사용자에게 알린다 (조용한 실패 금지)
+			manualAddressMode = true;
+			toast.error('우편번호 서비스를 불러오지 못했습니다. 주소를 직접 입력해 주세요.');
+			return;
+		}
+		postcodeLoading = false;
+
+		const w = window as typeof window & { daum?: { Postcode: DaumPostcodeCtor } };
+		if (!w.daum?.Postcode) {
+			manualAddressMode = true;
+			toast.error('우편번호 서비스를 불러오지 못했습니다. 주소를 직접 입력해 주세요.');
+			return;
+		}
+
+		new w.daum.Postcode({
+			oncomplete: (result) => {
+				const set = (name: string, value: string) => {
+					const el = formEl.elements.namedItem(name);
+					if (el instanceof HTMLInputElement) el.value = value;
+				};
+				set('zip', result.zonecode);
+				set('addr1', result.address);
+				const addr2 = formEl.elements.namedItem('addr2');
+				if (addr2 instanceof HTMLInputElement) addr2.focus();
+			}
+		}).open();
+	}
 
 	// "최근 배송지 불러오기" — uncontrolled 폼이므로 클릭 시 입력값을 직접 채운다.
 	// (bind 없이 value 속성만 쓰는 기존 방식·검증 실패 복원 동작을 그대로 유지)
@@ -94,6 +173,9 @@
 						value={v.receiver_phone}
 						inputmode="tel"
 						aria-invalid={!!errors.receiver_phone}
+						oninput={(e) => {
+							e.currentTarget.value = formatPhoneInput(e.currentTarget.value);
+						}}
 						class="mt-1 min-h-11 w-full rounded-lg border border-line-2 px-3 text-[15px]"
 					/>
 					{#if errors.receiver_phone}<span class="text-[13px] text-status-cancelled-fg"
@@ -106,18 +188,34 @@
 						<input
 							name="zip"
 							value={v.zip}
-							class="mt-1 min-h-11 w-full rounded-lg border border-line-2 px-3 text-[15px]"
+							readonly={!manualAddressMode}
+							class="mt-1 min-h-11 w-full rounded-lg border border-line-2 px-3 text-[15px] {manualAddressMode
+								? 'bg-surface'
+								: 'bg-bg'}"
 						/>
 					</label>
-					<label class="flex-1">
-						<span class="text-[14px] font-bold text-ink">주소 *</span>
-						<input
-							name="addr1"
-							value={v.addr1}
-							aria-invalid={!!errors.addr1}
-							class="mt-1 min-h-11 w-full rounded-lg border border-line-2 px-3 text-[15px]"
-						/>
-					</label>
+					<div class="flex flex-1 items-end gap-2">
+						<label class="flex-1">
+							<span class="text-[14px] font-bold text-ink">주소 *</span>
+							<input
+								name="addr1"
+								value={v.addr1}
+								readonly={!manualAddressMode}
+								aria-invalid={!!errors.addr1}
+								class="mt-1 min-h-11 w-full rounded-lg border border-line-2 px-3 text-[15px] {manualAddressMode
+									? 'bg-surface'
+									: 'bg-bg'}"
+							/>
+						</label>
+						<button
+							type="button"
+							onclick={openPostcodeSearch}
+							disabled={postcodeLoading}
+							class="min-h-11 shrink-0 rounded-lg border border-navy px-4 text-[14px] font-bold text-navy hover:bg-navy-tint disabled:opacity-60"
+						>
+							{postcodeLoading ? '불러오는 중…' : '우편번호 찾기'}
+						</button>
+					</div>
 				</div>
 				{#if errors.addr1}<span class="text-[13px] text-status-cancelled-fg">{errors.addr1}</span
 					>{/if}
@@ -146,9 +244,17 @@
 				무통장입금 (입금 확인 후 배송이 시작됩니다)
 			</p>
 			{#if data.bank?.bank || data.bank?.number}
-				<p class="mt-3 text-[14px] text-ink">
-					입금계좌: <b>{data.bank.bank} {data.bank.number}</b> (예금주 {data.bank.holder})
-				</p>
+				<div class="mt-3 flex flex-wrap items-center gap-2 text-[14px] text-ink">
+					<span
+						>입금계좌: <b>{data.bank.bank} {data.bank.number}</b> (예금주 {data.bank.holder})</span
+					>
+					{#if data.bank.number}
+						<CopyButton
+							value={data.bank.number.replace(/\D/g, '')}
+							successMessage="계좌번호가 복사되었습니다"
+						/>
+					{/if}
+				</div>
 			{/if}
 			<label class="mt-3 block">
 				<span class="text-[14px] font-bold text-ink">입금자명 *</span>

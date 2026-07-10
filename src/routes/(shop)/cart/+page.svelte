@@ -115,15 +115,16 @@
 		<ul class="space-y-3">
 			{#each rows as row (row.productId + (row.optionId ?? ''))}
 				<li
-					class="flex gap-4 rounded-xl border bg-surface p-4 {row.orderable
-						? 'border-line'
-						: 'border-status-cancelled-fg/40'}"
+					class="flex gap-4 rounded-xl border p-4 {row.orderable
+						? 'border-line bg-surface'
+						: 'border-status-cancelled-fg/40 bg-status-cancelled-bg/40'}"
 				>
 					<div class="h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-line bg-bg">
 						{#if row.thumbnailUrl}
 							<img
 								src={row.thumbnailUrl}
 								alt={row.productName}
+								loading="lazy"
 								class="h-full w-full object-cover"
 							/>
 						{/if}
@@ -136,8 +137,26 @@
 						{#if row.orderable}
 							<p class="mt-1 text-[15px] font-black text-navy">{formatPrice(row.unitPrice)}</p>
 						{:else}
-							<p class="mt-1 text-[13px] font-bold text-status-cancelled-fg">
-								{row.reason} — 주문하려면 삭제해 주세요
+							<p
+								class="mt-1 flex items-start gap-1.5 text-[13px] font-bold text-status-cancelled-fg"
+							>
+								<svg
+									width="15"
+									height="15"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									class="mt-0.5 flex-none"
+									aria-hidden="true"
+								>
+									<circle cx="12" cy="12" r="9" />
+									<path d="M12 8v5" />
+									<path d="M12 16.5v.01" />
+								</svg>
+								<span>{row.reason} — 주문할 수 없는 상품입니다. 삭제 후 다시 담아주세요.</span>
 							</p>
 						{/if}
 					</div>

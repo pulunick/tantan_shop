@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { SUPPORT_TEL } from '$lib/constants';
 	/**
 	 * 상품 리스트. 좌측 카테고리 사이드바(PC, tb+)/상단 칩(모바일), 정렬, 그리드, 페이지네이션.
 	 * 필터·정렬·페이지는 전부 URL 쿼리(category/q/sort/page)로 표현 — 새로고침·공유·뒤로가기에 안전하다.
@@ -7,6 +8,9 @@
 	import ProductCard from '$lib/components/product/ProductCard.svelte';
 	import Pagination from '$lib/components/ui/Pagination.svelte';
 	import type { PageData } from './$types';
+
+	// CLAUDE.md 절대 규칙: 전화문의 상품과 동일한 대표번호로 고정.
+	const PHONE_TEL = SUPPORT_TEL;
 
 	let { data }: { data: PageData } = $props();
 
@@ -160,7 +164,81 @@
 				</form>
 			</div>
 
-			{#if data.products.length === 0}
+			{#if data.products.length === 0 && data.q}
+				<!-- 검색어가 있는 0건: 전화 유도형 빈 상태 (DESIGN_SPEC [9]-(4)) -->
+				<div class="rounded-xl border border-line bg-surface px-6 py-14 text-center">
+					<span
+						class="mx-auto mb-5 flex h-[70px] w-[70px] items-center justify-center rounded-full bg-navy-tint"
+					>
+						<svg
+							width="34"
+							height="34"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.9"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							class="text-navy"
+							aria-hidden="true"
+						>
+							<circle cx="10.5" cy="10.5" r="6.5" />
+							<path d="M15.5 15.5L20 20" />
+						</svg>
+					</span>
+					<h2 class="text-[21px] font-black tracking-tight text-ink">
+						'<span class="text-navy">{data.q}</span>' 검색 결과가 없습니다
+					</h2>
+					<p class="mx-auto mt-2.5 max-w-[440px] text-[15.5px] leading-relaxed text-sub">
+						찾으시는 상품이 없나요? 전화 주시면 빠르게 찾아드립니다.
+					</p>
+					<div class="mt-6 flex flex-wrap justify-center gap-3">
+						<a
+							href="tel:{PHONE_TEL}"
+							class="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-yellow px-6 py-3 text-[15.5px] font-extrabold text-navy hover:bg-yellow-hover"
+						>
+							<svg
+								width="17"
+								height="17"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								aria-hidden="true"
+							>
+								<path
+									d="M6.5 4h3l1.5 4-2 1.5a11 11 0 0 0 5 5l1.5-2 4 1.5v3a2 2 0 0 1-2 2A16 16 0 0 1 4.5 6a2 2 0 0 1 2-2z"
+								/>
+							</svg>
+							{PHONE_TEL} 전화 문의
+						</a>
+						<a
+							href={resolve('/products')}
+							class="inline-flex min-h-11 items-center justify-center rounded-lg border border-navy px-6 py-3 text-[15.5px] font-bold text-navy hover:bg-bg"
+						>
+							전체 상품 보기
+						</a>
+					</div>
+					{#if data.categories.length > 0}
+						<div class="mt-8 border-t border-line pt-6">
+							<p class="mb-3 text-[13.5px] font-bold text-sub">이런 검색어는 어떠세요?</p>
+							<div class="flex flex-wrap justify-center gap-2">
+								{#each data.categories as cat (cat.id)}
+									<a
+										href={categoryHref(cat.id)}
+										class="rounded-full bg-navy-tint px-4 py-2 text-[14px] font-bold text-navy hover:bg-line"
+									>
+										{cat.name}
+									</a>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
+			{:else if data.products.length === 0}
+				<!-- 검색어 없이(빈 카테고리 등) 0건: 단순 빈 문구 -->
 				<div
 					class="flex flex-col items-center justify-center gap-3 rounded-xl border border-line bg-surface px-6 py-20 text-center"
 				>
@@ -183,7 +261,7 @@
 					<p class="text-[15px] text-sub">
 						다른 카테고리를 선택하거나 검색어를 바꿔서 다시 확인해 주세요.
 					</p>
-					{#if data.category || data.q}
+					{#if data.category}
 						<a
 							href={resolve('/products')}
 							class="mt-2 rounded-lg border border-navy px-5 py-2.5 text-[15px] font-bold text-navy hover:bg-bg"

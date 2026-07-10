@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import type { Product } from '$lib/types';
+import { sanitizeDescriptionHtml } from '$lib/server/sanitizeHtml';
 
 export type ProductDetailImage = {
 	url: string;
@@ -84,7 +85,9 @@ export const load: PageServerLoad = async ({ params, locals: { supabase } }) => 
 		price: row.price,
 		is_price_hidden: row.is_price_hidden,
 		status: row.status,
-		description_html: row.description_html,
+		// 저장 시점 정제(ProductForm→sanitize-description)와 별개로 렌더 직전에도 정제한다.
+		// 관리자 폼을 우회해 Data API 로 직접 쓴 HTML 이 {@html} 로 실행되는 경로 차단 (defense in depth)
+		description_html: row.description_html ? sanitizeDescriptionHtml(row.description_html) : null,
 		category: pickCategory(row.categories)
 	};
 
