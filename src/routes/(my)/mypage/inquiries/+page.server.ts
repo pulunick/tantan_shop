@@ -5,6 +5,7 @@ export type MyInquiry = {
 	id: string;
 	type: 'general' | 'quote' | 'reservation';
 	title: string;
+	content: string;
 	status: 'waiting' | 'answered';
 	answer: string | null;
 	answered_at: string | null;
@@ -18,7 +19,7 @@ export const load: PageServerLoad = async ({ locals: { supabase, safeGetSession 
 
 	const { data } = await supabase
 		.from('inquiries')
-		.select('id, type, title, status, answer, answered_at, created_at')
+		.select('id, type, title, content, status, answer, answered_at, created_at')
 		.eq('user_id', user.id)
 		.order('created_at', { ascending: false });
 

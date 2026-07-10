@@ -2,7 +2,9 @@
 	/**
 	 * tb(820px) 미만 전용 하단 고정 바. 높이 66px, 4칸(전화하기/메뉴/내정보/장바구니).
 	 * 터치 타깃 44px 이상 확보. "메뉴"는 MobileDrawer 를 여는 콜백을 호출한다(부모가 open 상태 소유).
+	 * "내정보" 탭은 /mypage 하위 라우트에 있을 때 활성(navy-tint 배경) 표시된다.
 	 */
+	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 
 	let {
@@ -12,6 +14,8 @@
 		tel?: string;
 		onMenuClick: () => void;
 	} = $props();
+
+	const mypageActive = $derived(page.url.pathname.startsWith('/mypage'));
 </script>
 
 <div
@@ -66,8 +70,9 @@
 
 	<a
 		href={resolve('/mypage')}
-		class="flex flex-col items-center justify-center gap-1"
+		class="flex flex-col items-center justify-center gap-1 {mypageActive ? 'bg-navy-tint' : ''}"
 		aria-label="내정보"
+		aria-current={mypageActive ? 'page' : undefined}
 	>
 		<svg
 			width="21"
