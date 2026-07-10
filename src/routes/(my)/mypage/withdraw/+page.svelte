@@ -115,9 +115,10 @@
 		</button>
 
 		<!-- 최종 확인 다이얼로그 -->
+		<!-- m-auto 필수: Tailwind preflight 가 dialog 기본 margin 을 제거해 없으면 좌상단에 붙는다 -->
 		<dialog
 			bind:this={dialog}
-			class="w-[400px] max-w-[calc(100%-40px)] rounded-2xl p-0 shadow-[0_20px_50px_rgba(0,0,0,.32)] backdrop:bg-[rgba(10,15,25,.55)]"
+			class="m-auto w-[400px] max-w-[calc(100%-40px)] rounded-2xl border-none p-0 shadow-[0_20px_50px_rgba(0,0,0,.32)] backdrop:bg-[rgba(10,15,25,.55)]"
 		>
 			<div class="p-7">
 				<span

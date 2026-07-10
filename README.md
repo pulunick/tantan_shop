@@ -51,6 +51,7 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 **남은 것**:
 
 - 배포: **GitHub `pulunick/tantan_shop`(main) 반영 완료.** Vercel 배포 + prod Supabase(마이그레이션·시드·admin 승격) 미착수.
+  ⚠️ prod Supabase 셋업 시 **Authentication → Sign In / Providers → Email → "Confirm email" OFF** 필수 (dev와 동일, decision-log 2026-07-10 즉시 로그인 정책).
 - 이미지 업로드는 orphan storage 객체 정리 미구현(단순화).
 - 클라이언트 확인 대기: 입금/환불 기한 문구(site_settings), 신규 주문/문의 이메일 알림(P1+), 무통장 계좌 실계좌 교체.
 - 리팩터 백로그: ConfirmDialog 공용화, bank_account 조회 헬퍼화, 관리자 목록 invalidateAll 최적화.

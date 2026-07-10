@@ -87,6 +87,9 @@ export const actions: Actions = {
 			return fail(400, signupFailPayload({ email, name, phone, errors: duplicateEmailErrors }));
 		}
 
-		redirect(303, '/login?registered=1');
+		// 이메일 자동 확인(Confirm email OFF, decision-log 2026-07-10)이면 signUp 응답에 세션이 포함되고
+		// SSR 클라이언트가 쿠키에 저장 완료 → 즉시 로그인 상태로 홈 이동(로컬 장바구니 병합은 루트 레이아웃이 수행).
+		// 이메일 확인이 켜져 있는 환경(설정 전/롤백 시)에서는 세션이 없으므로 기존 로그인 안내로 폴백.
+		redirect(303, data.session ? '/' : '/login?registered=1');
 	}
 };
