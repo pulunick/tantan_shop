@@ -73,7 +73,12 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
 		);
 
 	if (status !== 'all') query = query.eq('order_status', status);
-	if (q) query = query.or(`order_no.ilike.%${q}%,receiver_name.ilike.%${q}%`);
+	if (q) {
+		// PostgREST or() 필터는 쉼표/괄호/따옴표가 문법 구분자 — 검색어에 섞이면 필터가 깨진다
+		// ("홍길동,테스트" 같은 입력 방어). 구분자만 제거하고 나머지는 그대로 ilike 매칭.
+		const safe = q.replace(/[,()"\\]/g, '').trim();
+		if (safe) query = query.or(`order_no.ilike.%${safe}%,receiver_name.ilike.%${safe}%`);
+	}
 
 	const from = (page - 1) * PAGE_SIZE;
 	const to = from + PAGE_SIZE - 1;

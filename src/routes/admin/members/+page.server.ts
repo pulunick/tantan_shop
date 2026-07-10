@@ -27,7 +27,11 @@ export const load: PageServerLoad = async ({ url, locals: { supabase } }) => {
 		.from('profiles')
 		.select('id, name, phone, role, created_at', { count: 'exact' });
 
-	if (q) query = query.or(`name.ilike.%${q}%,phone.ilike.%${q}%`);
+	if (q) {
+		// PostgREST or() 필터는 쉼표/괄호/따옴표가 문법 구분자 — 검색어에서 제거해 필터 깨짐 방지
+		const safe = q.replace(/[,()"\\]/g, '').trim();
+		if (safe) query = query.or(`name.ilike.%${safe}%,phone.ilike.%${safe}%`);
+	}
 
 	const from = (page - 1) * PAGE_SIZE;
 	const to = from + PAGE_SIZE - 1;
