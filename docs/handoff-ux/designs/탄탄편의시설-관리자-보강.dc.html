@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef1f5;font-family:'Pretendard',system-ui,sans-serif;color:#1a1d24;-webkit-font-smoothing:antialiased}
+  a{color:#1F3864;text-decoration:none}
+  input,select,textarea,button{font-family:inherit}
+  ::-webkit-scrollbar{height:9px;width:9px}
+  ::-webkit-scrollbar-thumb{background:#c9ced6;border-radius:8px}
+  @media(max-width:980px){ .tt-inq{grid-template-columns:1fr!important} .tt-bprev{grid-template-columns:1fr!important} }
+  @media(max-width:860px){
+    .tt-admin{flex-direction:column!important}
+    .tt-side{width:100%!important;height:auto!important;position:static!important}
+    .tt-sidenav{display:flex!important;overflow-x:auto;white-space:nowrap;padding:8px 10px!important}
+    .tt-table-scroll{overflow-x:auto}
+  }
+</style>
+</helmet>
+
+<div class="tt-admin" style="display:flex;min-height:100vh">
+
+  <!-- SIDEBAR -->
+  <aside class="tt-side" style="width:248px;flex:none;background:#141b2b;color:#c7cdda;position:sticky;top:0;height:100vh;display:flex;flex-direction:column">
+    <div style="padding:22px 22px;display:flex;align-items:center;gap:11px;border-bottom:1px solid #242d40">
+      <span style="width:40px;height:40px;background:#F2B705;display:flex;align-items:center;justify-content:center;transform:rotate(45deg);border-radius:6px;flex:none">
+        <span style="transform:rotate(-45deg);color:#1F3864;font-weight:900;font-size:13px">탄탄</span>
+      </span>
+      <div style="line-height:1.2">
+        <div style="color:#fff;font-size:16px;font-weight:900">탄탄 관리자</div>
+        <div style="color:#7f8aa3;font-size:11.5px;font-weight:600">ADMIN CONSOLE</div>
+      </div>
+    </div>
+    <nav class="tt-sidenav" style="padding:12px 12px;display:flex;flex-direction:column;gap:4px">
+      <a href="탄탄편의시설-관리자.dc.html" style="text-align:left;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;background:transparent;color:#c7cdda;display:block" style-hover="background:#1e2740">대시보드</a>
+      <a href="탄탄편의시설-관리자.dc.html" style="text-align:left;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;background:transparent;color:#c7cdda;display:block" style-hover="background:#1e2740">상품 관리</a>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">카테고리 관리</button>
+      <button onClick="{{ goOrders }}" style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;background:{{ navOrderBg }};color:{{ navOrderColor }}">주문 관리</button>
+      <button style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:700;cursor:pointer;background:transparent;color:#c7cdda" style-hover="background:#1e2740">회원 관리</button>
+      <button onClick="{{ goInquiries }}" style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;background:{{ navInqBg }};color:{{ navInqColor }}">게시판 관리</button>
+      <button onClick="{{ goBanners }}" style="text-align:left;border:0;border-radius:9px;padding:14px 16px;font-size:16px;font-weight:800;cursor:pointer;background:{{ navBanBg }};color:{{ navBanColor }}">사이트 관리</button>
+    </nav>
+  </aside>
+
+  <!-- MAIN -->
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <div style="background:#fff;border-bottom:1px solid #e2e5ea;padding:16px 28px;display:flex;align-items:center;justify-content:space-between">
+      <h1 style="margin:0;font-size:22px;font-weight:900;letter-spacing:-.5px;white-space:nowrap">{{ pageTitle }}</h1>
+      <div style="display:flex;align-items:center;gap:14px">
+        <a href="탄탄편의시설-메인.dc.html" style="font-size:14px;font-weight:700;color:#6b7488">쇼핑몰 보기 ↗</a>
+        <div style="display:flex;align-items:center;gap:9px;padding:7px 12px 7px 7px;background:#f2f4f7;border-radius:30px">
+          <span style="width:32px;height:32px;border-radius:50%;background:#1F3864;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">황</span>
+          <span style="font-size:14.5px;font-weight:800;white-space:nowrap">황희춘 대표님</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="padding:28px;flex:1">
+
+      <!-- ===== ORDER LIST ===== -->
+      <div style="display:{{ ordersShow }}">
+        <!-- status tabs -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+          <sc-for list="{{ statusTabs }}" as="t" hint-placeholder-count="7">
+            <button onClick="{{ t.onClick }}" style="border:1px solid {{ t.border }};background:{{ t.bg }};color:{{ t.color }};font-size:14.5px;font-weight:800;padding:10px 16px;border-radius:9px;cursor:pointer;white-space:nowrap">{{ t.label }} <span style="opacity:.7">{{ t.count }}</span></button>
+          </sc-for>
+        </div>
+        <!-- search -->
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+          <input type="date" value="2026-07-01" style="border:1px solid #d4d9e0;border-radius:9px;padding:11px 13px;font-size:15px"/>
+          <span style="color:#6b7488;font-weight:700">~</span>
+          <input type="date" value="2026-07-07" style="border:1px solid #d4d9e0;border-radius:9px;padding:11px 13px;font-size:15px"/>
+          <div style="display:flex;flex:1;min-width:200px;border:1px solid #d4d9e0;border-radius:9px;overflow:hidden">
+            <input placeholder="주문자명 검색" style="flex:1;border:0;padding:12px 14px;font-size:15px;outline:none"/>
+            <button style="border:0;background:#1F3864;color:#fff;padding:0 20px;font-size:15px;font-weight:700;cursor:pointer">검색</button>
+          </div>
+        </div>
+        <!-- table -->
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;overflow:hidden">
+          <div class="tt-table-scroll">
+          <table style="width:100%;border-collapse:collapse;min-width:880px">
+            <thead>
+              <tr style="background:#f7f8fa;text-align:left">
+                <th style="padding:14px 20px;font-size:14px;font-weight:800;color:#6b7488">주문번호</th>
+                <th style="padding:14px 12px;font-size:14px;font-weight:800;color:#6b7488">일시</th>
+                <th style="padding:14px 12px;font-size:14px;font-weight:800;color:#6b7488">주문자</th>
+                <th style="padding:14px 12px;font-size:14px;font-weight:800;color:#6b7488">상품 요약</th>
+                <th style="padding:14px 12px;font-size:14px;font-weight:800;color:#6b7488;text-align:right">금액</th>
+                <th style="padding:14px 12px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">상태</th>
+                <th style="padding:14px 20px;font-size:14px;font-weight:800;color:#6b7488;text-align:center">관리</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ orders }}" as="o" hint-placeholder-count="7">
+                <tr style="border-top:1px solid #eef0f3">
+                  <td style="padding:14px 20px;font-size:14.5px;font-weight:800;color:#1F3864;white-space:nowrap">{{ o.no }}</td>
+                  <td style="padding:14px 12px;font-size:13.5px;color:#6b7488;white-space:nowrap">{{ o.time }}</td>
+                  <td style="padding:14px 12px;font-size:14.5px;font-weight:600">{{ o.name }}</td>
+                  <td style="padding:14px 12px;font-size:14px;color:#3a4252">{{ o.item }}</td>
+                  <td style="padding:14px 12px;font-size:14.5px;font-weight:800;text-align:right;white-space:nowrap">{{ o.amount }}</td>
+                  <td style="padding:14px 12px;text-align:center">
+                    <select value="{{ o.status }}" onChange="{{ o.onStatus }}" style="border:1px solid #d4d9e0;border-radius:8px;padding:9px 10px;font-size:13.5px;font-weight:700;background:#fff;cursor:pointer">
+                      <option value="결제대기">결제대기</option>
+                      <option value="결제완료">결제완료</option>
+                      <option value="배송준비">배송준비</option>
+                      <option value="배송중">배송중</option>
+                      <option value="배송완료">배송완료</option>
+                      <option value="취소">취소</option>
+                    </select>
+                  </td>
+                  <td style="padding:14px 20px;text-align:center">
+                    <div style="display:flex;gap:8px;justify-content:center;align-items:center">
+                      <button onClick="{{ o.confirmPay }}" style="display:{{ o.confirmShow }};align-items:center;gap:6px;min-height:44px;border:0;background:#F2B705;color:#1F3864;font-size:14.5px;font-weight:900;padding:0 16px;border-radius:9px;cursor:pointer;white-space:nowrap" style-hover="background:#ffc933"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>입금확인</button>
+                      <button onClick="{{ o.open }}" style="min-height:44px;border:1px solid #1F3864;background:#fff;color:#1F3864;font-size:14px;font-weight:800;padding:0 16px;border-radius:9px;cursor:pointer">상세</button>
+                    </div>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== ORDER DETAIL ===== -->
+      <div style="display:{{ orderDetailShow }};max-width:920px">
+        <a href="#" onClick="{{ backOrders }}" style="display:inline-block;font-size:14.5px;font-weight:700;color:#6b7488;margin-bottom:16px">← 주문 목록</a>
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <!-- order info -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:24px 26px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px">
+              <h2 style="margin:0;font-size:19px;font-weight:900">주문번호 {{ selNo }}</h2>
+              <span style="font-size:13px;font-weight:800;color:{{ selBadgeColor }};background:{{ selBadgeBg }};padding:6px 14px;border-radius:20px">{{ selStatus }}</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;font-size:14.5px">
+              <div style="display:flex;justify-content:space-between"><span style="color:#6b7488;font-weight:600">주문일시</span><span style="font-weight:700">{{ selTime }}</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#6b7488;font-weight:600">주문자</span><span style="font-weight:700">{{ selName }}</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#6b7488;font-weight:600">결제수단</span><span style="font-weight:700">무통장입금</span></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#6b7488;font-weight:600">결제금액</span><span style="font-weight:900;color:#1F3864">{{ selAmount }}</span></div>
+            </div>
+          </div>
+          <!-- shipping -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:24px 26px">
+            <h3 style="margin:0 0 14px;font-size:17px;font-weight:900">배송지</h3>
+            <div style="font-size:14.5px;line-height:1.9;color:#3a4252">
+              <div><b style="color:#1a1d24">{{ selName }}</b> &nbsp; 010-1234-5678</div>
+              <div>부산광역시 수영구 ○○로 00, ○○빌딩 1층</div>
+              <div style="color:#6b7488">요청사항 : 세금계산서 발행 요청 / 낮 시간 하차 가능</div>
+            </div>
+          </div>
+          <!-- items -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:24px 26px">
+            <h3 style="margin:0 0 8px;font-size:17px;font-weight:900">주문 상품</h3>
+            <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-top:1px solid #eef0f3">
+              <div style="width:56px;height:56px;flex:none;border-radius:8px;background:repeating-linear-gradient(45deg,#eef0f3,#eef0f3 7px,#e5e8ee 7px,#e5e8ee 14px)"></div>
+              <div style="flex:1"><div style="font-size:15px;font-weight:700">고무 카스토퍼 750 (반사지)</div><div style="font-size:13px;color:#6b7488;margin-top:3px">옵션 : 기본 / 수량 4개</div></div>
+              <div style="font-size:15px;font-weight:900">28,000원</div>
+            </div>
+          </div>
+          <!-- status flow -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:24px 26px">
+            <h3 style="margin:0 0 16px;font-size:17px;font-weight:900">주문 상태 변경</h3>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+              <sc-for list="{{ stages }}" as="s" hint-placeholder-count="5">
+                <span style="font-size:14px;font-weight:800;color:{{ s.color }};background:{{ s.bg }};padding:9px 15px;border-radius:9px;white-space:nowrap">{{ s.label }}</span>
+                <span style="color:#c7ccd4;font-weight:700;display:{{ s.arrowShow }}">→</span>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;padding-top:18px;border-top:1px solid #eef0f3">
+              <div>
+                <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">택배사</label>
+                <select style="border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;background:#fff;cursor:pointer">
+                  <option>CJ대한통운</option><option>롯데택배</option><option>한진택배</option><option>경동택배(화물)</option>
+                </select>
+              </div>
+              <div style="flex:1;min-width:180px">
+                <label style="display:block;font-size:13.5px;font-weight:800;margin-bottom:7px">송장번호</label>
+                <input placeholder="송장번호 입력" style="width:100%;border:1px solid #d4d9e0;border-radius:9px;padding:13px 14px;font-size:15px;outline:none"/>
+              </div>
+              <button style="border:0;background:#1F3864;color:#fff;font-size:16px;font-weight:900;padding:14px 24px;border-radius:10px;cursor:pointer;white-space:nowrap">배송중 처리</button>
+            </div>
+            <div style="margin-top:14px;display:flex;gap:10px">
+              <button style="border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:14.5px;font-weight:800;padding:11px 18px;border-radius:9px;cursor:pointer">배송준비 처리</button>
+              <button style="border:1px solid #e2c3c3;background:#fdf5f5;color:#c0392b;font-size:14.5px;font-weight:800;padding:11px 18px;border-radius:9px;cursor:pointer">주문 취소</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== INQUIRIES ===== -->
+      <div style="display:{{ inquiriesShow }}">
+        <div style="display:flex;gap:8px;margin-bottom:18px">
+          <button onClick="{{ filterUnanswered }}" style="border:1px solid {{ fUnansBorder }};background:{{ fUnansBg }};color:{{ fUnansColor }};font-size:14.5px;font-weight:800;padding:10px 18px;border-radius:9px;cursor:pointer">미답변</button>
+          <button onClick="{{ filterAll }}" style="border:1px solid {{ fAllBorder }};background:{{ fAllBg }};color:{{ fAllColor }};font-size:14.5px;font-weight:800;padding:10px 18px;border-radius:9px;cursor:pointer">전체</button>
+        </div>
+        <div class="tt-inq" style="display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start">
+          <!-- list -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;overflow:hidden">
+            <sc-for list="{{ inquiries }}" as="q" hint-placeholder-count="4">
+              <button onClick="{{ q.select }}" style="width:100%;text-align:left;border:0;border-top:1px solid #eef0f3;background:{{ q.rowBg }};padding:16px 20px;cursor:pointer;display:flex;align-items:center;gap:12px">
+                <span style="flex:none;font-size:12px;font-weight:800;color:{{ q.typeColor }};background:{{ q.typeBg }};padding:4px 10px;border-radius:6px">{{ q.type }}</span>
+                <span style="flex:1;min-width:0">
+                  <span style="display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:#1a1d24"><span style="display:{{ q.lockShow }}">🔒</span>{{ q.title }}</span>
+                  <span style="display:block;font-size:13px;color:#6b7488;margin-top:4px">{{ q.author }} · {{ q.date }}</span>
+                </span>
+                <span style="flex:none;font-size:12.5px;font-weight:800;color:{{ q.stColor }};background:{{ q.stBg }};padding:5px 11px;border-radius:20px;white-space:nowrap">{{ q.st }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <!-- detail + answer -->
+          <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:22px 24px;position:sticky;top:20px">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+              <span style="font-size:12px;font-weight:800;color:{{ selQTypeColor }};background:{{ selQTypeBg }};padding:4px 10px;border-radius:6px">{{ selQType }}</span>
+              <span style="font-size:13px;color:#6b7488;font-weight:600">{{ selQAuthor }} · {{ selQDate }}</span>
+            </div>
+            <h3 style="margin:0 0 12px;font-size:17px;font-weight:900;line-height:1.4">{{ selQTitle }}</h3>
+            <div style="background:#f7f8fa;border-radius:10px;padding:16px;font-size:14.5px;line-height:1.7;color:#3a4252;margin-bottom:18px">{{ selQBody }}</div>
+            <label style="display:block;font-size:14px;font-weight:800;margin-bottom:8px">답변 작성</label>
+            <textarea rows="5" placeholder="고객 문의에 대한 답변을 입력하세요." style="width:100%;border:1px solid #d4d9e0;border-radius:10px;padding:13px 14px;font-size:15px;outline:none;resize:vertical;margin-bottom:14px"></textarea>
+            <div style="display:flex;gap:10px">
+              <button style="flex:1;border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:15px;font-weight:800;padding:13px 0;border-radius:9px;cursor:pointer">임시저장</button>
+              <button style="flex:2;border:0;background:#1F3864;color:#fff;font-size:15px;font-weight:900;padding:13px 0;border-radius:9px;cursor:pointer">답변 완료 처리</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BANNERS ===== -->
+      <div style="display:{{ bannersShow }};max-width:920px">
+        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:26px">
+          <sc-for list="{{ banners }}" as="b" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:16px 18px;display:flex;align-items:center;gap:16px">
+              <span style="flex:none;color:#b7c0cf;font-size:22px;cursor:grab;font-weight:900">⠿</span>
+              <div style="width:150px;height:76px;flex:none;border-radius:9px;background:repeating-linear-gradient(45deg,#e7ebf1,#e7ebf1 11px,#dde2ea 11px,#dde2ea 22px);display:flex;align-items:center;justify-content:center"><span style="font-family:ui-monospace,monospace;font-size:11px;color:#6b7488">배너 미리보기</span></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:16px;font-weight:800;color:#1a1d24">{{ b.title }}</div>
+                <div style="font-size:13.5px;color:#6b7488;margin-top:5px">링크 : {{ b.link }}</div>
+                <div style="font-size:13.5px;color:#6b7488;margin-top:2px">노출기간 : {{ b.period }}</div>
+              </div>
+              <button onClick="{{ b.toggle }}" style="display:inline-flex;align-items:center;gap:9px;border:0;background:none;cursor:pointer;flex:none">
+                <span style="width:52px;height:29px;border-radius:20px;background:{{ b.trackBg }};display:flex;align-items:center;justify-content:{{ b.justify }};padding:3px">
+                  <span style="width:23px;height:23px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25)"></span>
+                </span>
+                <span style="font-size:13.5px;font-weight:800;width:36px;text-align:left;color:{{ b.labelColor }}">{{ b.label }}</span>
+              </button>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="background:#fff;border:1px solid #e2e5ea;border-radius:14px;padding:26px 28px">
+          <h2 style="margin:0 0 20px;font-size:19px;font-weight:900">새 배너 등록</h2>
+          <div style="display:flex;flex-direction:column;gap:20px">
+            <div>
+              <label style="display:block;font-size:15px;font-weight:800;margin-bottom:10px">배너 이미지</label>
+              <!-- upload dropzone -->
+              <div onClick="{{ doUpload }}" style="display:{{ dropShow }};border:2px dashed #b7c0cf;border-radius:12px;padding:28px;text-align:center;background:#fafbfc;cursor:pointer">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#8a94a6" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+                <div style="font-size:15px;font-weight:800;color:#3a4252">배너 이미지를 끌어다 놓으세요</div>
+                <div style="font-size:13.5px;color:#6b7488;margin-top:6px">권장 <b style="color:#1F3864">1920 × 600px</b> · 5MB 이하 · JPG / PNG</div>
+              </div>
+              <!-- uploaded preview -->
+              <div style="display:{{ previewShow }};flex-direction:column;gap:18px">
+                <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+                  <div style="display:flex;align-items:center;gap:9px;font-size:14px;font-weight:800;color:#1b6b3a"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1b6b3a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>summer_hero_1920x600.jpg · 1.8MB 업로드 완료</div>
+                  <button onClick="{{ resetUpload }}" style="min-height:40px;border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:14px;font-weight:800;padding:0 16px;border-radius:9px;cursor:pointer">다시 업로드</button>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start" class="tt-bprev">
+                  <!-- PC frame -->
+                  <div>
+                    <div style="font-size:13px;font-weight:800;color:#6b7488;margin-bottom:9px">PC 미리보기 <span style="font-weight:600;color:#98a0af">(1920×600 비율)</span></div>
+                    <div style="border:1px solid #d7deea;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(20,27,43,.08)">
+                      <div style="height:30px;background:#e9edf3;display:flex;align-items:center;gap:6px;padding:0 12px"><span style="width:9px;height:9px;border-radius:50%;background:#c7ccd4"></span><span style="width:9px;height:9px;border-radius:50%;background:#c7ccd4"></span><span style="width:9px;height:9px;border-radius:50%;background:#c7ccd4"></span></div>
+                      <div style="aspect-ratio:1920/600;background:repeating-linear-gradient(45deg,#e3e8f0,#e3e8f0 16px,#d7dde8 16px,#d7dde8 32px);display:flex;align-items:center;justify-content:center"><span style="font-family:ui-monospace,monospace;font-size:12px;color:#5a6472;background:rgba(255,255,255,.88);padding:6px 13px;border-radius:7px">배너 전체 노출 (크롭 없음)</span></div>
+                    </div>
+                  </div>
+                  <!-- mobile frame -->
+                  <div>
+                    <div style="font-size:13px;font-weight:800;color:#6b7488;margin-bottom:9px">모바일 미리보기 <span style="font-weight:600;color:#98a0af">(중앙 크롭)</span></div>
+                    <div style="width:100%;max-width:260px;margin:0 auto;border:8px solid #141b2b;border-radius:26px;overflow:hidden;box-shadow:0 6px 18px rgba(20,27,43,.14)">
+                      <div style="height:22px;background:#141b2b;display:flex;align-items:center;justify-content:center"><span style="width:52px;height:6px;border-radius:6px;background:#3a4459"></span></div>
+                      <div style="position:relative;aspect-ratio:360/300;background:repeating-linear-gradient(45deg,#e3e8f0,#e3e8f0 12px,#d7dde8 12px,#d7dde8 24px);display:flex;align-items:center;justify-content:center">
+                        <span style="position:absolute;left:0;right:0;top:0;height:22%;background:rgba(20,27,43,.06);border-bottom:1px dashed #aeb8c8"></span>
+                        <span style="position:absolute;left:0;right:0;bottom:0;height:22%;background:rgba(20,27,43,.06);border-top:1px dashed #aeb8c8"></span>
+                        <span style="font-family:ui-monospace,monospace;font-size:11px;color:#5a6472;background:rgba(255,255,255,.9);padding:5px 10px;border-radius:6px">중앙 크롭 영역</span>
+                      </div>
+                    </div>
+                    <div style="font-size:12px;color:#8a94a6;font-weight:600;text-align:center;margin-top:8px;line-height:1.5">모바일에서는 상하 일부가 잘립니다.<br/>핵심 문구는 가운데 배치하세요.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;flex-wrap:wrap">
+              <div style="flex:1;min-width:220px">
+                <label style="display:block;font-size:15px;font-weight:800;margin-bottom:10px">연결 링크</label>
+                <input placeholder="예) /product_list.html?cate=braille" style="width:100%;border:1px solid #d4d9e0;border-radius:10px;padding:14px 15px;font-size:15px;outline:none"/>
+              </div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-end;flex-wrap:wrap">
+              <div>
+                <label style="display:block;font-size:15px;font-weight:800;margin-bottom:10px">노출 시작일</label>
+                <input type="date" value="2026-07-08" style="border:1px solid #d4d9e0;border-radius:10px;padding:13px 14px;font-size:15px"/>
+              </div>
+              <div>
+                <label style="display:block;font-size:15px;font-weight:800;margin-bottom:10px">노출 종료일</label>
+                <input type="date" value="2026-08-08" style="border:1px solid #d4d9e0;border-radius:10px;padding:13px 14px;font-size:15px"/>
+              </div>
+              <div style="width:120px">
+                <label style="display:block;font-size:15px;font-weight:800;margin-bottom:10px">노출 순서</label>
+                <input type="number" value="1" min="1" style="width:100%;border:1px solid #d4d9e0;border-radius:10px;padding:13px 14px;font-size:15px;outline:none"/>
+              </div>
+            </div>
+            <button style="border:0;background:#1F3864;color:#fff;font-size:17px;font-weight:900;padding:16px 0;border-radius:11px;cursor:pointer;margin-top:4px">배너 등록하기</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div style="position:fixed;inset:0;z-index:130;display:{{ dialogShow }};align-items:center;justify-content:center">
+  <div onClick="{{ closeConfirm }}" style="position:absolute;inset:0;background:rgba(10,15,25,.55)"></div>
+  <div style="position:relative;width:440px;max-width:92%;background:#fff;border-radius:16px;padding:30px 30px 26px;box-shadow:0 20px 50px rgba(0,0,0,.32)">
+    <span style="width:56px;height:56px;border-radius:50%;background:#FBF1D8;display:flex;align-items:center;justify-content:center;margin:0 auto 18px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#8F6A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></span>
+    <h3 style="margin:0 0 12px;font-size:20px;font-weight:900;text-align:center;line-height:1.4">입금확인 처리할까요?</h3>
+    <p style="margin:0 0 8px;font-size:16px;color:#3a4252;font-weight:600;text-align:center;line-height:1.6">주문 <b style="color:#1F3864;font-family:ui-monospace,monospace">{{ dialogNo }}</b> 을(를)<br/>입금확인 처리합니다.</p>
+    <div style="text-align:center;margin:14px 0 22px"><span style="font-size:14px;color:#6b7488;font-weight:700">입금 금액</span><div style="font-size:30px;font-weight:900;color:#1F3864;letter-spacing:-1px;margin-top:2px">{{ dialogAmount }}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button onClick="{{ closeConfirm }}" style="min-height:52px;border:1px solid #d4d9e0;background:#fff;color:#3a4252;font-size:16px;font-weight:800;border-radius:11px;cursor:pointer">돌아가기</button>
+      <button onClick="{{ doConfirm }}" style="min-height:52px;border:0;background:#F2B705;color:#1F3864;font-size:16px;font-weight:900;border-radius:11px;cursor:pointer">입금확인</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div style="position:fixed;right:28px;bottom:28px;z-index:200;display:{{ toastShow }};align-items:center;gap:11px;background:#1F3864;color:#fff;padding:15px 20px;border-radius:12px;box-shadow:0 8px 24px rgba(20,27,43,.3)">
+  <span style="width:26px;height:26px;border-radius:50%;background:#F2B705;display:flex;align-items:center;justify-content:center;flex:none"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1F3864" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+  <span style="font-size:15.5px;font-weight:700">{{ toastMsg }}</span>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    view: 'orders',
+    tab: '전체',
+    orders: [
+      { id: 1, no: '20260707-0002', time: '오늘 10:24', name: '김O호', item: '점자블럭 외 2건', amount: '170,000원', status: '결제완료' },
+      { id: 2, no: '20260707-0001', time: '오늘 09:05', name: '박O수', item: '고무 카스토퍼 750', amount: '28,000원', status: '배송준비' },
+      { id: 3, no: '20260706-0008', time: '07.06 17:41', name: '이O정', item: 'STS 안전손잡이 외 1건', amount: '73,000원', status: '배송중' },
+      { id: 4, no: '20260706-0004', time: '07.06 14:12', name: '수영구청', item: '점자블럭 대량', amount: '640,000원', status: '배송중' },
+      { id: 5, no: '20260705-0011', time: '07.05 11:30', name: '최O아', item: '화장실 점자촉지판', amount: '106,000원', status: '배송완료' },
+      { id: 6, no: '20260705-0003', time: '07.05 09:12', name: '정O민', item: '스테인리스 볼라드 Ø76', amount: '88,000원', status: '결제대기' },
+      { id: 7, no: '20260704-0006', time: '07.04 16:20', name: '강O호', item: '카스토퍼 외 3건', amount: '210,000원', status: '취소' },
+    ],
+    selId: 2,
+    dialog: null,
+    toast: null,
+    uploaded: false,
+    inqFilter: 'unanswered',
+    selInq: 0,
+    banners: [
+      { id: 1, title: '메인 히어로 A — 여름 안전 캠페인', link: '/event/summer', period: '2026.07.01 ~ 07.31', on: true },
+      { id: 2, title: '신제품 디자인블럭 안내', link: '/product_list.html?cate=braille', period: '상시', on: true },
+      { id: 3, title: '관공서 견적 배너', link: '/notice/1', period: '2026.06.01 ~ 06.30 (만료)', on: false },
+    ],
+  };
+
+  renderVals() {
+    const v = this.state.view;
+    const titles = { orders: '주문 관리', orderDetail: '주문 상세', inquiries: '게시판 관리 — 문의', banners: '사이트 관리 — 배너' };
+
+    const badge = (s) => ({
+      '결제대기': { bg: '#f2f4f7', color: '#6b7488' },
+      '결제완료': { bg: '#eef2f8', color: '#1F3864' },
+      '배송준비': { bg: '#fbf1d8', color: '#8F6A00' },
+      '배송중': { bg: '#dde8ff', color: '#234f9e' },
+      '배송완료': { bg: '#e2f1e8', color: '#1b6b3a' },
+      '취소': { bg: '#fbf1f1', color: '#a3403a' },
+    }[s] || { bg: '#f2f4f7', color: '#6b7488' });
+
+    const setO = (fn) => this.setState(s => ({ orders: s.orders.map(fn) }));
+    const allOrders = this.state.orders;
+    const tab = this.state.tab;
+    const tabNames = ['전체', '결제대기', '결제완료', '배송준비', '배송중', '배송완료', '취소'];
+    const statusTabs = tabNames.map(t => {
+      const active = tab === t;
+      const count = t === '전체' ? allOrders.length : allOrders.filter(o => o.status === t).length;
+      return {
+        label: t, count: count,
+        onClick: () => this.setState({ tab: t }),
+        bg: active ? '#1F3864' : '#fff',
+        color: active ? '#fff' : '#3a4252',
+        border: active ? '#1F3864' : '#d4d9e0',
+      };
+    });
+    const filtered = tab === '전체' ? allOrders : allOrders.filter(o => o.status === tab);
+    const orders = filtered.map(o => ({
+      no: o.no, time: o.time, name: o.name, item: o.item, amount: o.amount, status: o.status,
+      onStatus: (e) => setO(x => x.id === o.id ? { ...x, status: e.target.value } : x),
+      confirmShow: o.status === '결제대기' ? 'inline-flex' : 'none',
+      confirmPay: () => this.setState({ dialog: o.id }),
+      open: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ view: 'orderDetail', selId: o.id }); },
+    }));
+
+    const dlgOrder = allOrders.find(o => o.id === this.state.dialog);
+
+    const sel = allOrders.find(o => o.id === this.state.selId) || allOrders[0];
+    const selB = badge(sel.status);
+    const flow = ['결제대기', '결제완료', '배송준비', '배송중', '배송완료'];
+    const curIdx = flow.indexOf(sel.status);
+    const stages = flow.map((label, i) => ({
+      label,
+      bg: (curIdx >= 0 && i <= curIdx) ? '#1F3864' : '#eef2f8',
+      color: (curIdx >= 0 && i <= curIdx) ? '#fff' : '#9aa4ba',
+      arrowShow: i < flow.length - 1 ? 'inline' : 'none',
+    }));
+
+    const inqData = [
+      { type: '견적', lock: true, title: '관공서 점자블럭 대량 견적 요청', author: '수영구청 담당자', date: '07.07', done: false, body: '수영구 관내 공공시설 3개소에 설치할 자기질 점자블럭 견적을 요청드립니다. 규격과 수량 기준 단가 및 시공 가능 여부 회신 부탁드립니다.' },
+      { type: '예약', lock: false, title: '아파트 계단 핸드레일 시공 예약 문의', author: '김O호', date: '07.06', done: false, body: '△△아파트 계단 구간 핸드레일 설치를 희망합니다. 희망일 7/20, 현장 실측 가능한 일정 안내 부탁드립니다.' },
+      { type: '일반', lock: true, title: '고무 카스토퍼 규격 문의', author: '박O수', date: '07.06', done: false, body: '주차장에 설치할 카스토퍼의 길이와 고정 방식이 궁금합니다.' },
+      { type: '일반', lock: false, title: '상품 배송 관련 문의', author: '이O정', date: '07.05', done: true, body: '주문한 상품 배송 일정이 궁금합니다.' },
+      { type: '견적', lock: false, title: '볼라드 설치 견적 요청', author: '최O아', date: '07.04', done: true, body: '보행로 볼라드 6개 설치 견적 부탁드립니다.' },
+    ];
+    const typeStyle = (t) => ({ '일반': { bg: '#eef2f8', color: '#1F3864' }, '견적': { bg: '#fbf1d8', color: '#8F6A00' }, '예약': { bg: '#e2f1e8', color: '#1b6b3a' } }[t]);
+    const filt = this.state.inqFilter;
+    const visibleInq = filt === 'unanswered' ? inqData.filter(q => !q.done) : inqData;
+    const inquiries = visibleInq.map((q) => {
+      const realIdx = inqData.indexOf(q);
+      const ts = typeStyle(q.type);
+      const st = q.done ? { label: '답변완료', bg: '#e2f1e8', color: '#1b6b3a' } : { label: '대기', bg: '#fbf1d8', color: '#8F6A00' };
+      return {
+        type: q.type, typeBg: ts.bg, typeColor: ts.color,
+        lockShow: q.lock ? 'inline' : 'none',
+        title: q.title, author: q.author, date: q.date,
+        st: st.label, stBg: st.bg, stColor: st.color,
+        rowBg: this.state.selInq === realIdx ? '#f4f7fb' : '#fff',
+        select: () => this.setState({ selInq: realIdx }),
+      };
+    });
+    const selQ = inqData[this.state.selInq] || inqData[0];
+    const selQts = typeStyle(selQ.type);
+
+    const setB = (fn) => this.setState(s => ({ banners: s.banners.map(fn) }));
+    const banners = this.state.banners.map(b => ({
+      title: b.title, link: b.link, period: b.period,
+      trackBg: b.on ? '#1F3864' : '#c7ccd4',
+      justify: b.on ? 'flex-end' : 'flex-start',
+      label: b.on ? '노출' : '숨김',
+      labelColor: b.on ? '#1F3864' : '#8a94a6',
+      toggle: () => setB(x => x.id === b.id ? { ...x, on: !x.on } : x),
+    }));
+
+    const navO = (v === 'orders' || v === 'orderDetail');
+    const navI = v === 'inquiries';
+    const navBn = v === 'banners';
+
+    return {
+      pageTitle: titles[v],
+      ordersShow: v === 'orders' ? 'block' : 'none',
+      orderDetailShow: v === 'orderDetail' ? 'block' : 'none',
+      inquiriesShow: v === 'inquiries' ? 'block' : 'none',
+      bannersShow: v === 'banners' ? 'block' : 'none',
+      goOrders: () => this.setState({ view: 'orders' }),
+      backOrders: (e) => { if (e && e.preventDefault) e.preventDefault(); this.setState({ view: 'orders' }); },
+      goInquiries: () => this.setState({ view: 'inquiries' }),
+      goBanners: () => this.setState({ view: 'banners' }),
+      navOrderBg: navO ? '#F2B705' : 'transparent', navOrderColor: navO ? '#1F3864' : '#c7cdda',
+      navInqBg: navI ? '#F2B705' : 'transparent', navInqColor: navI ? '#1F3864' : '#c7cdda',
+      navBanBg: navBn ? '#F2B705' : 'transparent', navBanColor: navBn ? '#1F3864' : '#c7cdda',
+
+      statusTabs, orders,
+
+      dialogShow: dlgOrder ? 'flex' : 'none',
+      dialogNo: dlgOrder ? dlgOrder.no : '',
+      dialogAmount: dlgOrder ? dlgOrder.amount : '',
+      closeConfirm: () => this.setState({ dialog: null }),
+      doConfirm: () => {
+        const id = this.state.dialog;
+        this.setState(s => ({ orders: s.orders.map(x => x.id === id ? { ...x, status: '결제완료' } : x), dialog: null, toast: '입금확인 처리되었습니다' }));
+        setTimeout(() => this.setState({ toast: null }), 2800);
+      },
+      toastShow: this.state.toast ? 'flex' : 'none',
+      toastMsg: this.state.toast || '',
+
+      dropShow: this.state.uploaded ? 'none' : 'block',
+      previewShow: this.state.uploaded ? 'flex' : 'none',
+      doUpload: () => this.setState({ uploaded: true }),
+      resetUpload: () => this.setState({ uploaded: false }),
+      selNo: sel.no, selTime: sel.time, selName: sel.name, selAmount: sel.amount, selStatus: sel.status,
+      selBadgeBg: selB.bg, selBadgeColor: selB.color, stages,
+
+      inquiries,
+      filterUnanswered: () => this.setState({ inqFilter: 'unanswered' }),
+      filterAll: () => this.setState({ inqFilter: 'all' }),
+      fUnansBg: filt === 'unanswered' ? '#1F3864' : '#fff', fUnansColor: filt === 'unanswered' ? '#fff' : '#3a4252', fUnansBorder: filt === 'unanswered' ? '#1F3864' : '#d4d9e0',
+      fAllBg: filt === 'all' ? '#1F3864' : '#fff', fAllColor: filt === 'all' ? '#fff' : '#3a4252', fAllBorder: filt === 'all' ? '#1F3864' : '#d4d9e0',
+      selQType: selQ.type, selQTypeBg: selQts.bg, selQTypeColor: selQts.color,
+      selQTitle: selQ.title, selQAuthor: selQ.author, selQDate: selQ.date, selQBody: selQ.body,
+
+      banners,
+    };
+  }
+}
+</script>
+</body>
+</html>

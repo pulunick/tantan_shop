@@ -82,6 +82,7 @@
 - docs/dev-spec.md — 화면·기능 정의, ERD, 운영 정책 (기획서 요약본)
 - docs/design-system.md — 컬러/타이포/컴포넌트 토큰
 - docs/decision-log.md — 확정 사항 이력 (변경 시 여기에 추가)
+- docs/ux-enhancements.md — 페이지별 UX 보강 스펙(P1/P1+/P2). 디자인 완성 후 착수 예정
 - docs/design/ — Claude Design 연계 규칙 + 확정 시안 백업(.dc.html/.png, 기록용). 연계는 시안 수신(핸드오프/export)→토큰 기준 Svelte 재구현. **`/design-sync` 미사용**(React 전용, 스택 불일치) (README 참조)
 
 ## Phase 1 범위 밖 (구현하지 말 것)

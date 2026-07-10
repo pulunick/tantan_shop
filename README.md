@@ -13,7 +13,7 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 - **결제**: Phase 1 무통장입금만 (PG 미연동)
 - **배포**: Vercel (`@sveltejs/adapter-vercel`)
 
-## 구현 현황 (Phase 1, 2026-07-09 기준)
+## 구현 현황 (Phase 1, 2026-07-10 기준)
 
 **DB**: 초기 스키마(14테이블·RLS·트리거) + `media` Storage 버킷(공개read/admin write) — dev 적용·검증 완료. 시드 데이터 반영. PK는 UUID 유지.
 
@@ -30,10 +30,22 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 - 배송지: 주소록 테이블 없이 현행 유지 + 체크아웃 "최근 배송지 불러오기"(마지막 주문 주소 프리필).
 - 회원탈퇴: 익명화 탈퇴(`profiles.withdrawn_at`) — 주문無 완전삭제 / 주문有 PII 비식별화+auth 밴, 주문 row 보존.
 
+**UX 보강 구현 완료**(2026-07-10, `docs/ux-enhancements.md` P1+저비용 P1+ / 시안 `docs/handoff-ux/` [9]~[12]):
+
+- 전역: svelte-sonner 토스트(네이비 테마), 404/에러 페이지(전화 동선), 이미지 lazy, 모바일 맨위로 버튼
+- 주문: Daum 우편번호(차단 시 직접 입력 폴백), 휴대폰 자동 하이픈, 주문완료 입금 안내 카드+계좌 복사
+- 주문상세: 상태 타임라인 5단계, 택배사 배송조회 링크(couriers.ts 단일 소스), 취소 다이얼로그
+- 상품: 라이트박스(native dialog), 전화문의 이중 동선(문의 프리필), URL 복사, 검색 0건 전화 유도
+- 비회원 문의조회 `/inquiry/check`(scrypt 서버 검증, 열거/타이밍 방어, 레이트리밋)
+- 관리자: 원클릭 입금확인(이중 처리 방지), 배너 크롭 미리보기 2종+업로드 압축, 상품폼 가격 콤마+Tiptap 위지윅(서버 sanitize 다층 방어)
+- 검증: check/lint/vitest 25/25 + 8앵글 코드리뷰(수정 10건 반영) + dev 스모크. **사용자 수동 테스트 대기**
+
 **남은 것**:
 
 - 배포: **GitHub `pulunick/tantan_shop`(main) 반영 완료.** Vercel 배포 + prod Supabase(마이그레이션·시드·admin 승격) 미착수.
 - 이미지 업로드는 orphan storage 객체 정리 미구현(단순화).
+- 클라이언트 확인 대기: 입금/환불 기한 문구(site_settings), 신규 주문/문의 이메일 알림(P1+), 무통장 계좌 실계좌 교체.
+- 리팩터 백로그: ConfirmDialog 공용화, bank_account 조회 헬퍼화, 관리자 목록 invalidateAll 최적화.
 
 ## 최초 셋업 순서
 
