@@ -3,6 +3,7 @@
 	import Gnb from '$lib/components/layout/Gnb.svelte';
 	import MobileDrawer from '$lib/components/layout/MobileDrawer.svelte';
 	import MobileBottomBar from '$lib/components/layout/MobileBottomBar.svelte';
+	import ScrollTopButton from '$lib/components/layout/ScrollTopButton.svelte';
 	import Footer from '$lib/components/layout/Footer.svelte';
 	import type { CompanyInfo } from '$lib/components/layout/types';
 	import type { LayoutProps } from './$types';
@@ -39,3 +40,4 @@
 
 <MobileDrawer open={drawerOpen} onClose={() => (drawerOpen = false)} {categories} {tel} />
 <MobileBottomBar {tel} onMenuClick={() => (drawerOpen = true)} />
+<ScrollTopButton />

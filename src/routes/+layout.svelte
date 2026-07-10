@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 	import favicon from '$lib/assets/favicon.svg';
+	import { Toaster } from 'svelte-sonner';
 	import { invalidate } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { syncLocalCartToServer } from '$lib/cart/sync';
@@ -30,3 +31,6 @@
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
 {@render children()}
+
+<!-- 전역 토스트 (담김/복사/저장 피드백). 스타일은 app.css [data-sonner-toast] 참조 -->
+<Toaster position="bottom-right" duration={2600} visibleToasts={4} gap={10} />

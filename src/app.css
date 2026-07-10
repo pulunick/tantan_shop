@@ -56,3 +56,42 @@ html {
 body {
 	min-height: 100dvh;
 }
+
+/* ── 전역 토스트 (svelte-sonner 커스텀 테마 — DESIGN_SPEC [9]-(5)) ───────────
+ * 성공: 네이비 배경 + 흰 텍스트 + 옐로 원형/네이비 체크 아이콘
+ * 오류: #A3403A 배경 + 흰 텍스트
+ * PC 우하단 / 모바일(600px↓, sonner 내장) 하단 중앙 stretch, 2.6초 자동 소멸 */
+[data-sonner-toast] {
+	border-radius: 12px !important;
+	border: none !important;
+	box-shadow: 0 8px 22px rgba(20, 27, 43, 0.28) !important;
+	font-family: var(--font-sans) !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	padding: 14px 18px !important;
+}
+[data-sonner-toast][data-type='success'] {
+	background: var(--color-navy) !important;
+	color: #fff !important;
+}
+[data-sonner-toast][data-type='success'] [data-icon] {
+	background: var(--color-yellow);
+	color: var(--color-navy);
+	border-radius: 9999px;
+	width: 22px;
+	height: 22px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+[data-sonner-toast][data-type='success'] [data-icon] svg {
+	width: 14px;
+	height: 14px;
+}
+[data-sonner-toast][data-type='error'] {
+	background: #a3403a !important;
+	color: #fff !important;
+}
+[data-sonner-toast][data-type='error'] [data-icon] {
+	color: #fff;
+}
