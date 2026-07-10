@@ -11,7 +11,14 @@ const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	// 임포트한 디자인 핸드오프 아티팩트(참조용)는 린트 대상 아님
-	{ ignores: ['docs/design/**', 'docs/handoff-ux/**', 'supabase/.temp/**'] },
+	{
+		ignores: [
+			'docs/design/**',
+			'docs/handoff-ux/**',
+			'docs/design_handoff_mypage/**',
+			'supabase/.temp/**'
+		]
+	},
 	js.configs.recommended,
 	ts.configs.recommended,
 	svelte.configs.recommended,
