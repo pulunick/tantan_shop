@@ -57,9 +57,17 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 - [ ] 마이페이지 리디자인 전 화면 (특히 모바일 하단바 '내정보'·비밀번호 변경·탈퇴 게이트)
 - [ ] 실기기 QA: 안드로이드 크롬에서 모바일 상품 등록+사진 업로드+품절 토글 (대표 사용 시나리오)
 
+**임시 프리뷰 배포**(2026-07-13, decision-log 참조):
+
+- 개발자 개인 Vercel 프로젝트 `pulunicks-projects/tantan-shop-preview` + **dev Supabase** 연결. dev 키 3개를 Vercel **Preview 스코프**에만 등록(프리뷰 한정 예외).
+- URL: https://tantan-shop-preview-1qy94z3r0-pulunicks-projects.vercel.app
+- ⚠️ 배포는 반드시 `npx vercel deploy --target=preview`. 인자 없이 `vercel deploy` 하면 **프로덕션 타깃**으로 나가 (a) Preview 스코프 env 를 못 읽어 DB 미연결, (b) 자동 `noindex` 가 없어 검색 노출 위험.
+- **미완**: Deployment Protection(Vercel Authentication) 이 켜져 있어 로그인 없이는 302 → 실기기 QA·공유하려면 Settings → Deployment Protection → Disabled 필요.
+- 비밀번호 재설정 메일 링크는 이 도메인이 dev Supabase 허용 Redirect URL 에 없어 localhost 로 떨어짐(다른 플로우는 정상). 필요 시 Auth → URL Configuration 에 `https://tantan-shop-preview-*.vercel.app/**` 추가.
+
 **남은 것**:
 
-- 배포: **GitHub `pulunick/tantan_shop`(main) 반영 완료.** Vercel 배포 + prod Supabase(마이그레이션·시드·admin 승격) 미착수.
+- 배포: **GitHub `pulunick/tantan_shop`(main) 반영 완료.** 임시 프리뷰(위)는 올림. **운영 배포 미착수** — 클라이언트 명의 Vercel 팀 + prod Supabase(마이그레이션·시드·admin 승격).
   ⚠️ prod Supabase 셋업 시 **Authentication → Sign In / Providers → Email → "Confirm email" OFF** 필수 (dev와 동일, decision-log 2026-07-10 즉시 로그인 정책).
 - 이미지 업로드는 orphan storage 객체 정리 미구현(단순화).
 - 클라이언트 확인 대기: 입금/환불 기한 문구(site_settings), 신규 주문/문의 이메일 알림(P1+), 무통장 계좌 실계좌 교체.
