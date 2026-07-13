@@ -60,9 +60,12 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
 **임시 프리뷰 배포**(2026-07-13, decision-log 참조):
 
 - 개발자 개인 Vercel 프로젝트 `pulunicks-projects/tantan-shop-preview` + **dev Supabase** 연결. dev 키 3개를 Vercel **Preview 스코프**에만 등록(프리뷰 한정 예외).
-- URL: https://tantan-shop-preview-1qy94z3r0-pulunicks-projects.vercel.app
-- ⚠️ 배포는 반드시 `npx vercel deploy --target=preview`. 인자 없이 `vercel deploy` 하면 **프로덕션 타깃**으로 나가 (a) Preview 스코프 env 를 못 읽어 DB 미연결, (b) 자동 `noindex` 가 없어 검색 노출 위험.
-- **미완**: Deployment Protection(Vercel Authentication) 이 켜져 있어 로그인 없이는 302 → 실기기 QA·공유하려면 Settings → Deployment Protection → Disabled 필요.
+- 현재 URL: https://tantan-shop-preview-b0ushfpxd-pulunicks-projects.vercel.app
+  (200·`noindex` 확인, Deployment Protection 해제 완료 → 폰에서 바로 열림. 상품 8개·카테고리 5개 렌더 = dev DB 연결 정상)
+- **배포 = CLI 전용**: `npx vercel deploy --target=preview`. GitHub 연동은 **끊어둠**(Settings → Git → Disconnect).
+  이유: 깃 연동 상태에서 main push 는 자동으로 **production 타깃** 빌드가 되는데, dev 키가 Preview 스코프에만 있어 `$env/static` 이 빌드 타임에 MISSING_EXPORT 로 **빌드 실패**하고, 성공하더라도 production 은 자동 `noindex` 가 없어 검색 노출 위험. Production Branch 설정 항목이 이 플랜 UI 에 없어 연동 해제로 차단.
+  ⚠️ dev 키를 Production 스코프에 등록해서 우회하지 말 것 (noindex 사라짐).
+- 배포할 때마다 **URL 이 새로 생김**(깃 연동 없어 브랜치 별칭 없음). 고정 주소가 필요하면 `vercel alias` 로 별칭 부여.
 - 비밀번호 재설정 메일 링크는 이 도메인이 dev Supabase 허용 Redirect URL 에 없어 localhost 로 떨어짐(다른 플로우는 정상). 필요 시 Auth → URL Configuration 에 `https://tantan-shop-preview-*.vercel.app/**` 추가.
 
 **남은 것**:
