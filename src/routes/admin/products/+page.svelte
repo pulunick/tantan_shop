@@ -85,7 +85,7 @@
 		/>
 		<button
 			type="submit"
-			class="min-h-11 rounded-lg bg-navy px-5 text-[15px] font-bold text-white hover:bg-navy/90"
+			class="min-h-11 flex-none rounded-lg bg-navy px-5 text-[15px] font-bold whitespace-nowrap text-white hover:bg-navy/90"
 		>
 			검색
 		</button>
@@ -168,7 +168,10 @@
 												class:translate-x-6={p.status === 'on_sale'}
 											></span>
 										</span>
-										<span class="w-9 text-left text-[14px] font-extrabold {st.classes}">
+										<!-- 라벨 폭 고정으로 토글 위치를 안정시키되, '판매중'(3자)이 들어갈 만큼은 확보한다 -->
+										<span
+											class="w-11 text-left text-[14px] font-extrabold whitespace-nowrap {st.classes}"
+										>
 											{st.label}
 										</span>
 									</button>
@@ -196,7 +199,7 @@
 						<td class="px-5 py-3.5 text-center">
 							<a
 								href={resolve('/admin/products/[id]', { id: p.id })}
-								class="inline-flex min-h-11 items-center rounded-lg border border-navy px-4 text-[14px] font-extrabold text-navy hover:bg-navy-tint"
+								class="inline-flex min-h-11 items-center rounded-lg border border-navy px-4 text-[14px] font-extrabold whitespace-nowrap text-navy hover:bg-navy-tint"
 							>
 								수정
 							</a>

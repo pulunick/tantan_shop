@@ -68,7 +68,7 @@
 			{product.name}
 		</p>
 		<div class="mt-3">
-			<ProductPrice price={product.price} isPhoneInquiry={product.is_price_hidden} />
+			<ProductPrice price={product.price} isPhoneInquiry={product.is_price_hidden} compact />
 		</div>
 	</div>
 </a>

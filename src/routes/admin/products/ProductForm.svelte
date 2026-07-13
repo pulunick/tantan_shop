@@ -365,16 +365,19 @@
 
 	<div>
 		<span class="mb-2.5 block text-[16px] font-extrabold text-ink">옵션</span>
-		<div class="flex flex-col gap-2.5">
+		<!-- 모바일에선 한 옵션이 두 줄로 접히므로, 행 사이 간격을 행 내부보다 넓혀 옵션끼리 뭉쳐 보이지 않게 한다 -->
+		<div class="flex flex-col gap-5 tb:gap-2.5">
 			{#each optionRows as row, i (i)}
-				<div class="flex items-center gap-2.5">
+				<!-- 모바일: 옵션명이 한 줄 전체(basis-full) → 추가금액+삭제가 다음 줄. 820px↑: 한 줄.
+				     input 은 min-width:auto(≈170px) 때문에 min-w-0 없이는 축소되지 않아 화면을 넘친다. -->
+				<div class="flex flex-wrap items-center gap-2.5">
 					<label class="sr-only" for={`pf-opt-name-${i}`}>옵션명</label>
 					<input
 						id={`pf-opt-name-${i}`}
 						type="text"
 						bind:value={row.name}
 						placeholder="옵션명 (예: 점형)"
-						class="min-h-11 flex-1 rounded-[10px] border border-line-2 px-3.5 py-3 text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none"
+						class="min-h-11 w-full min-w-0 basis-full rounded-[10px] border border-line-2 px-3.5 py-3 text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none tb:w-auto tb:flex-1 tb:basis-0"
 					/>
 					<label class="sr-only" for={`pf-opt-extra-${i}`}>추가금액</label>
 					<input
@@ -384,7 +387,7 @@
 						inputmode="numeric"
 						bind:value={row.extraPrice}
 						placeholder="추가금액"
-						class="min-h-11 w-[150px] rounded-[10px] border border-line-2 px-3.5 py-3 text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none"
+						class="min-h-11 min-w-0 flex-1 rounded-[10px] border border-line-2 px-3.5 py-3 text-[15px] text-ink focus:ring-2 focus:ring-navy focus:outline-none tb:w-[150px] tb:flex-none"
 					/>
 					<button
 						type="button"

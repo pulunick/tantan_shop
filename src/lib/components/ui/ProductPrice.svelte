@@ -5,13 +5,18 @@
 	type Props = {
 		price: number | null;
 		isPhoneInquiry: boolean;
+		/** 상품 카드용. 모바일 2열(카드 내부 ≈96px)에서 6자리 가격이 '원'만 다음 줄로
+		 *  떨어지는 것을 막기 위해 작은 화면에서만 글자를 줄인다. 상세 페이지는 21px 유지. */
+		compact?: boolean;
 	};
 
-	let { price, isPhoneInquiry }: Props = $props();
+	let { price, isPhoneInquiry, compact = false }: Props = $props();
+
+	const size = $derived(compact ? 'text-[18px] sm:text-[21px]' : 'text-[21px]');
 </script>
 
 {#if isPhoneInquiry}
-	<span class="text-[21px] font-black tracking-tight text-phone-price">전화문의</span>
+	<span class="{size} font-black tracking-tight text-phone-price">전화문의</span>
 {:else}
-	<span class="text-[21px] font-black tracking-tight text-ink">{formatPrice(price ?? 0)}</span>
+	<span class="{size} font-black tracking-tight text-ink">{formatPrice(price ?? 0)}</span>
 {/if}
