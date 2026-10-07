@@ -74,6 +74,9 @@ SvelteKit(Svelte 5 runes) + TypeScript + Tailwind CSS v4 + Supabase.
   ⚠️ prod Supabase 셋업 시 **Authentication → Sign In / Providers → Email → "Confirm email" OFF** 필수 (dev와 동일, decision-log 2026-07-10 즉시 로그인 정책).
 - 이미지 업로드는 orphan storage 객체 정리 미구현(단순화).
 - 클라이언트 확인 대기: 입금/환불 기한 문구(site_settings), 신규 주문/문의 이메일 알림(P1+), 무통장 계좌 실계좌 교체.
+- **2026-10-06 클라이언트 자료 요청 발송**(데이터 템플릿 엑셀 + 추가 요청: 계좌·통신판매업 번호·입금/환불/교환반품 정책·개인정보보호책임자·회사소개·운영 계정용 이메일/카드·도메인·사업자등록증) → 회신 대기.
+  회신 후: `/about`·`/terms`·`/privacy` 구현(현재 골격만), site_settings 반영, 카테고리 최종 확정(seed 5종 vs 엑셀 6종), 실데이터 입력, 운영 배포.
+- 2026-10-07: 개인용 영화 예매 워처(CGV·메가박스 Edge Function)는 납품 대상이 아니어서 로컬 `watchers` 브랜치로 분리(`main`에서 제외, 원격 미푸시).
 - 리팩터 백로그: ConfirmDialog 공용화, bank_account 조회 헬퍼화, 관리자 목록 invalidateAll 최적화.
 
 ## 최초 셋업 순서
