@@ -21,3 +21,6 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Supabase CLI 로컬 캐시 (링크 정보·접속 주소 포함)
+supabase/.temp/
